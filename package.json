@@ -1,0 +1,24 @@
+{
+  "name": "untitled",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.15.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.2.0",
+    "easyxml": "^2.0.1",
+    "express": "~4.14.0",
+    "jade": "~1.11.0",
+    "js-yaml": "^3.7.0",
+    "js2xmlparser": "^2.0.2",
+    "lodash": "latest",
+    "morgan": "~1.7.0",
+    "serve-favicon": "~2.3.0",
+    "soap": "^0.18.0",
+    "swagger-tools": "^0.10.1",
+    "connect": "^3.5.0"
+  }
+}
