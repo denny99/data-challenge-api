@@ -11,6 +11,7 @@ Glassdoor = require('./../controllers/GlassdoorService');
 Adzuna    = require('./../controllers/AdzunaService');
 
 router.use(MASTER_ROUTE + "/xing/getById", Xing.getById);
+router.use(MASTER_ROUTE + "/xing/find", Xing.find);
 router.use(MASTER_ROUTE + "/adzuna/search", Adzuna.search);
 router.use(MASTER_ROUTE + "/glassdoor/estimate", Glassdoor.estimate);
 

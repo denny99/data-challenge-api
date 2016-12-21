@@ -1,7 +1,7 @@
 /**
  * Created by admin on 20.12.16.
  */
-var http    = require('http');
+var https   = require('https');
 var _       = require('lodash');
 var EasyXml = require('easyxml');
 
@@ -34,7 +34,7 @@ function getResponseAsString(res, config) {
 		});
 	};
 
-	http.request(config, callback).end();
+	https.request(config, callback).end();
 }
 
 module.exports = {
