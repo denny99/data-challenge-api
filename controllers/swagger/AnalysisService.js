@@ -21,5 +21,5 @@ exports.usersNetworkIdAnalyzePOST = function (args, res, next) {
 		res.end();
 	}
 
-}
+};
 

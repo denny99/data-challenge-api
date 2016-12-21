@@ -1,5 +1,15 @@
 'use strict';
 
+var _ = require('lodash');
+
+var ParamUtil    = require('../../util/ParamUtil');
+var ResponseUtil = require('../../util/ResponseUtil');
+var JSONXMLUtil  = require("../../util/JSONXMLUtil.js");
+
+var HOST = 'localhost';
+var PORT = '8080';
+var PATH = '/DataChallenge_1/LocalUserViewModel/users';
+
 exports.usersGET = function (args, res, next) {
 	/**
 	 * parameters expected in the args:
@@ -31,32 +41,21 @@ exports.usersIdDELETE = function (args, res, next) {
 	 **/
 	// no response value expected for this operation
 	res.end();
-}
+};
 
 exports.usersIdGET = function (args, res, next) {
 	/**
 	 * parameters expected in the args:
 	 * id (String)
 	 **/
-	var examples                 = {};
-	examples['application/json'] = {
-		"xingAccessToken"    : "aeiou",
-		"password"           : "aeiou",
-		"linkedInAccessToken": "aeiou",
-		"xingId"             : "aeiou",
-		"linkedInProfile"    : "aeiou",
-		"id"                 : "aeiou",
-		"username"           : "aeiou"
-	};
-	if (Object.keys(examples).length > 0) {
-		res.setHeader('Content-Type', 'application/json');
-		res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
-	}
-	else {
-		res.end();
-	}
-  
-}
+
+	var path   = ParamUtil.buildPath([args.id.value]);
+	var config = new ResponseUtil.Configuration(HOST, PATH + path, 'get', PORT, true);
+
+	ResponseUtil.getResponseAsString(config, false, function (statusCode, response) {
+		ResponseUtil.sendResponse(res, statusCode, JSONXMLUtil.stringToJSON(response), res.req.accepts()[0]);
+	});
+};
 
 exports.usersIdPUT = function (args, res, next) {
 	/**

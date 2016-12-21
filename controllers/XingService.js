@@ -1,51 +1,49 @@
 /**
  * Created by admin on 20.12.16.
  */
-var ResponseUtil = require("../util/responseUtil.js");
+var ResponseUtil = require('../util/ResponseUtil.js');
+var ParamUtil    = require('../util/ParamUtil.js');
 
-var SEARCH_URL  = "api.xing.com";
-var SEARCH_PATH = "/v1/users/";
+var SEARCH_URL  = 'api.xing.com';
+var SEARCH_PATH = '/v1/users/';
 
 module.exports.getById = function (req, res) {
-	var config = {
-		host: SEARCH_URL,
-		path: SEARCH_PATH + req.query.id
-	};
+	var config = new ResponseUtil.Configuration(SEARCH_URL, SEARCH_PATH + req.query.id, 'get');
 
-	config.path += "?";
+	config.path += ParamUtil.buildQuery({
+		fields                : req.query.fields,
+		oauth_consumer_key    : req.query.oauthconsumerkey,
+		oauth_token           : req.query.oauthtoken,
+		oauth_signature_method: req.query.oauthsignaturemethod,
+		oauth_timestamp       : req.query.oauthtimestamp,
+		oauth_nonce           : req.query.oauthnonce,
+		oauth_version         : req.query.oauthversion,
+		oauth_signature       : req.query.oauthsignature
+	});
 
-	config.path += "fields=" + req.query.fields;
-	config.path += "&oauth_consumer_key=" + encodeURI(req.query.oauthconsumerkey);
-	config.path += "&oauth_token=" + encodeURI(req.query.oauthtoken);
-	config.path += "&oauth_signature_method=" + encodeURI(req.query.oauthsignaturemethod);
-	config.path += "&oauth_timestamp=" + encodeURI(req.query.oauthtimestamp);
-	config.path += "&oauth_nonce=" + encodeURI(req.query.oauthnonce);
-	config.path += "&oauth_version=" + encodeURI(req.query.oauthversion);
-	config.path += "&oauth_signature=" + encodeURI(req.query.oauthsignature).replace("&", "%26");
-
-	ResponseUtil.getResponseAsString(res, config);
+	ResponseUtil.getResponseAsString(config, true, function (statusCode, response) {
+		ResponseUtil.sendResponse(res, statusCode, JSON.parse(response), 'application/xml', 'response');
+	});
 };
 
 module.exports.find = function (req, res) {
-	var config = {
-		host: SEARCH_URL,
-		path: SEARCH_PATH + "find.json"
-	};
+	var config = new ResponseUtil.Configuration(SEARCH_URL, SEARCH_PATH + 'find.json', 'get');
 
-	config.path += "?";
+	config.path += ParamUtil.buildQuery(
+		{
+			keywords              : req.query.keywords,
+			user_fields           : req.query.userfields,
+			limit                 : req.query.limit || 100,
+			oauth_consumer_key    : req.query.oauthconsumerkey,
+			oauth_token           : req.query.oauthtoken,
+			oauth_signature_method: req.query.oauthsignaturemethod,
+			oauth_timestamp       : req.query.oauthtimestamp,
+			oauth_nonce           : req.query.oauthnonce,
+			oauth_version         : req.query.oauthversion,
+			oauth_signature       : req.query.oauthsignature
+		});
 
-	config.path += "keywords=" + encodeURI(req.query.keywords);
-	config.path += "&user_fields=" + encodeURI(req.query.userfields);
-	config.path += "&limit=" + (req.query.limit || 100);
-	config.path += "&oauth_consumer_key=" + encodeURI(req.query.oauthconsumerkey);
-	config.path += "&oauth_token=" + encodeURI(req.query.oauthtoken);
-	config.path += "&oauth_signature_method=" + encodeURI(req.query.oauthsignaturemethod);
-	config.path += "&oauth_timestamp=" + encodeURI(req.query.oauthtimestamp);
-	config.path += "&oauth_nonce=" + encodeURI(req.query.oauthnonce);
-	config.path += "&oauth_version=" + encodeURI(req.query.oauthversion);
-	config.path += "&oauth_signature=" + encodeURI(req.query.oauthsignature).replace("&", "%26");
-
-	console.log(config.path);
-
-	ResponseUtil.getResponseAsString(res, config);
+	ResponseUtil.getResponseAsString(config, true, function (statusCode, response) {
+		ResponseUtil.sendResponse(res, statusCode, JSON.parse(response), 'application/xml', 'response');
+	});
 };

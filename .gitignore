@@ -28,7 +28,6 @@
 
 # IntelliJ
 /out/
-.idea
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
@@ -88,3 +87,9 @@ jspm_packages
 
 # Yarn Integrity file
 .yarn-integrity
+/.idea/misc.xml
+/.idea/codeStyleSettings.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/jsLibraryMappings.xml
+/.idea/workspace.xml

@@ -3,7 +3,7 @@ swagger: "2.0"
 info:
   description: "Search Social Media profiles and estimate salary"
   version: "1.0.0"
-  title: "DataChallenege API"
+  title: "DataChallenge API"
 host: "localhost:9090"
 basePath: "/api/v1"
 schemes:
@@ -321,8 +321,7 @@ definitions:
         type: "string"
         description: "social media id"
       employment:
-        type: "object"
-        properties: {}
+        $ref: "#/definitions/Employment"
     xml:
       name: "user"
   Employment:
@@ -340,9 +339,9 @@ definitions:
       industry:
         type: "string"
         description: "category name of company"
-      career_level:
+      name:
         type: "string"
-        description: "job level of user"
+        description: "company name"
       title:
         type: "string"
         description: "Official name of employment"
