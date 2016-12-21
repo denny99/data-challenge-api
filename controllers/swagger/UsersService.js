@@ -6,8 +6,8 @@ var ParamUtil    = require('../../util/ParamUtil');
 var ResponseUtil = require('../../util/ResponseUtil');
 var JSONXMLUtil  = require("../../util/JSONXMLUtil.js");
 
-var HOST = 'localhost';
-var PORT = '8080';
+var HOST = process.env.vdb_host;
+var PORT = process.env.vdb_port;
 var PATH = '/DataChallenge_1/LocalUserViewModel/users';
 
 exports.usersGET = function (args, res, next) {
@@ -80,8 +80,8 @@ exports.usersIdPUT = function (args, res, next) {
 	else {
 		res.end();
 	}
-  
-}
+
+};
 
 exports.usersPOST = function (args, res, next) {
 	/**
