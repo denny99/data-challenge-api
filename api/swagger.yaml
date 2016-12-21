@@ -1,367 +1,382 @@
-# this is an example of the Uber API
-# as a demonstration of an API spec in YAML
-swagger: '2.0'
+---
+swagger: "2.0"
 info:
-  title: DataChallenege API
-  description: Search Social Media profiles and estimate salary
+  description: "Search Social Media profiles and estimate salary"
   version: "1.0.0"
-# the domain of the service
-host: localhost:9090
-# array of all schemes that your API supports
+  title: "DataChallenege API"
+host: "localhost:9090"
+basePath: "/api/v1"
 schemes:
-  - http
-# will be prefixed to all paths
-basePath: /api/v1
+- "http"
 produces:
-- application/json
-- application/xml
+- "application/json"
+- "application/xml"
 paths:
-  /users/authenticate:
+  /users:
     get:
-      summary: Perform login
-      description: Perform Basic login
-      parameters:
-        - name: username
-          in: header
-          description: username to use for login
-          required: true
-          type: string
-        - name: password
-          in: header
-          description: password to use for login
-          required: true
-          type: string
       tags:
-        - Users
+      - "Users"
+      summary: "search for social media profiles"
+      description: "search for social media profiles"
+      operationId: "usersGET"
+      parameters:
+      - name: "keywords"
+        in: "query"
+        description: "word to search for in profiles (name, city, email)"
+        required: true
+        type: "string"
       responses:
         200:
-          description: Auth ok. User is logged in
+          description: "Users found return results"
           schema:
-            $ref: '#/definitions/User'
-        403:
-          description: Invalid credentials
+            type: "array"
+            items:
+              $ref: "#/definitions/SocialMediaUser"
+        400:
+          description: "Missing parameters"
           schema:
-            $ref: '#/definitions/Error'
-  /users:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Users"
     post:
-      summary: create new user
-      description: Create new basic user
-      parameters:
-        - name: user
-          in: body
-          description: user with username and password
-          required: false
-          schema:
-            $ref: '#/definitions/User'
       tags:
-        - Users
+      - "Users"
+      summary: "create new user"
+      description: "Create new basic user"
+      operationId: "usersPOST"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "user with username and password"
+        required: false
+        schema:
+          $ref: "#/definitions/User"
       responses:
         201:
-          description: User created
+          description: "User created"
           schema:
-            $ref: '#/definitions/User'
+            $ref: "#/definitions/User"
         400:
-          description: Missing parameters
+          description: "Missing parameters"
           schema:
-            $ref: '#/definitions/Error'
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Users"
+  /users/authenticate:
     get:
-      summary: search for social media profiles
-      description: search for social media profiles
-      parameters:
-        - name: keywords
-          in: query
-          description: word to search for in profiles (name, city, email)
-          required: true
-          type: string
       tags:
-        - Users
+      - "Authentication"
+      summary: "Perform login"
+      description: "Perform Basic login"
+      operationId: "usersAuthenticateGET"
+      parameters:
+      - name: "username"
+        in: "header"
+        description: "username to use for login"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "header"
+        description: "password to use for login"
+        required: true
+        type: "string"
       responses:
         200:
-          description: Users found return results
+          description: "Auth ok. User is logged in"
           schema:
-            type: 'array'
-            items:
-              $ref: '#/definitions/SocialMediaUser'
-        400:
-          description: Missing parameters
+            $ref: "#/definitions/User"
+        403:
+          description: "Invalid credentials"
           schema:
-            $ref: '#/definitions/Error'
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Authentication"
   /users/{id}:
-    delete:
-      summary: delete existing user
-      description: delete existing user
-      parameters:
-        - name: id
-          in: path
-          description: affected user id
-          required: true
-          type: string
+    get:
       tags:
-        - Users
+      - "Users"
+      summary: "get existing user"
+      description: "get existing user"
+      operationId: "usersIdGET"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "affected user id"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "User found returning"
+          schema:
+            $ref: "#/definitions/User"
+        404:
+          description: "User not found"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Users"
+    put:
+      tags:
+      - "Users"
+      summary: "update user"
+      description: "Create new basic user"
+      operationId: "usersIdPUT"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "affected user id"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "user"
+        description: "user with updated username or password"
+        required: false
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "User updated. Returning new object"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Invalid parameters"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "User not found"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Users"
+    delete:
+      tags:
+      - "Users"
+      summary: "delete existing user"
+      description: "delete existing user"
+      operationId: "usersIdDELETE"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "affected user id"
+        required: true
+        type: "string"
       responses:
         204:
-          description: User deleted
+          description: "User deleted"
         404:
-          description: User not found
+          description: "User not found"
           schema:
-            $ref: '#/definitions/Error'
-    put:
-      summary: update user
-      description: Create new basic user
-      parameters:
-        - name: id
-          in: path
-          description: affected user id
-          required: true
-          type: string
-        - name: user
-          in: body
-          description: user with updated username or password
-          required: false
-          schema:
-            $ref: '#/definitions/User'
-
-      tags:
-        - Users
-      responses:
-        200:
-          description: User updated. Returning new object
-          schema:
-            $ref: '#/definitions/User'
-        400:
-          description: Invalid parameters
-          schema:
-            $ref: '#/definitions/Error'
-        404:
-          description: User not found
-          schema:
-            $ref: '#/definitions/Error'
-    get:
-      summary: get existing user
-      description: get existing user
-      parameters:
-        - name: id
-          in: path
-          description: affected user id
-          required: true
-          type: string
-      tags:
-        - Users
-      responses:
-        200:
-          description: User found returning
-          schema:
-            $ref: '#/definitions/User'
-        404:
-          description: User not found
-          schema:
-            $ref: '#/definitions/Error'
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Users"
   /users/{id}/connect/{network}:
     get:
-      summary: connect existing user with social media profile
-      description: connect existing user with social media profile
-      parameters:
-        - name: id
-          in: path
-          description: affected user id
-          required: true
-          type: string
-        - name: network
-          in: path
-          description: network name (xing, linkedIn) to join user
-          required: true
-          type: string
       tags:
-        - Users
+      - "Social Media"
+      - "Authentication"
+      summary: "connect existing user with social media profile"
+      description: "connect existing user with social media profile"
+      operationId: "usersIdConnectNetworkGET"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "affected user id"
+        required: true
+        type: "string"
+      - name: "network"
+        in: "path"
+        description: "network name (xing, linkedIn) to join user"
+        required: true
+        type: "string"
       responses:
         200:
-          description: Returns authorization page of network
+          description: "Returns authorization page of network"
           schema:
-            type: string
+            type: "string"
         404:
-          description: User not found / Network doesn't exist
+          description: "User not found / Network doesn't exist"
           schema:
-            $ref: '#/definitions/Error'
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "SocialMedia"
     delete:
-      summary: delete social media connection
-      description: delete social media connection
-      parameters:
-        - name: id
-          in: path
-          description: affected user id
-          required: true
-          type: string
-        - name: network
-          in: path
-          description: network name (xing, linkedIn) to remove from user
-          required: true
-          type: string
       tags:
-        - Users
+      - "Social Media"
+      summary: "delete social media connection"
+      description: "delete social media connection"
+      operationId: "usersIdConnectNetworkDELETE"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "affected user id"
+        required: true
+        type: "string"
+      - name: "network"
+        in: "path"
+        description: "network name (xing, linkedIn) to remove from user"
+        required: true
+        type: "string"
       responses:
         200:
-          description: Removal ok. Returning new user objet
+          description: "Removal ok. Returning new user objet"
           schema:
-            $ref: '#/definitions/User'
+            $ref: "#/definitions/User"
         404:
-          description: User not found / Network doesn't exist
+          description: "User not found / Network doesn't exist"
           schema:
-            $ref: '#/definitions/Error'
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "SocialMedia"
   /users/{network}/{id}:
     get:
-      summary: load social media profile
-      description: load social media profile
-      parameters:
-        - name: id
-          in: path
-          description: user id of social media profile (alternative 'me' for own profile)
-          required: true
-          type: string
-        - name: network
-          in: path
-          description: network name (xing, linkedIn) of user
-          required: true
-          type: string
       tags:
-        - Users
+      - "Social Media"
+      summary: "load social media profile"
+      description: "load social media profile"
+      operationId: "usersNetworkIdGET"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "user id of social media profile (alternative 'me' for own profile)"
+        required: true
+        type: "string"
+      - name: "network"
+        in: "path"
+        description: "network name (xing, linkedIn) of user"
+        required: true
+        type: "string"
       responses:
         200:
-          description: Returns found social media profile
+          description: "Returns found social media profile"
           schema:
-            $ref: '#/definitions/SocialMediaUser'
+            $ref: "#/definitions/SocialMediaUser"
         404:
-          description: User not found / Network doesn't exist
+          description: "User not found / Network doesn't exist"
           schema:
-            $ref: '#/definitions/Error'
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "SocialMedia"
   /users/{network}/{id}/analyze:
     post:
-      summary: perform salary analysis for social media profile
-      description: perform salary analysis for social media profile
-      parameters:
-        - name: id
-          in: path
-          description: user id of social media profile (alternative 'me' for own profile)
-          required: true
-          type: string
-        - name: network
-          in: path
-          description: network name (xing, linkedIn) of user
-          required: true
-          type: string
       tags:
-        - Users
+      - "Analysis"
+      summary: "perform salary analysis for social media profile"
+      description: "perform salary analysis for social media profile"
+      operationId: "usersNetworkIdAnalyzePOST"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "user id of social media profile (alternative 'me' for own profile)"
+        required: true
+        type: "string"
+      - name: "network"
+        in: "path"
+        description: "network name (xing, linkedIn) of user"
+        required: true
+        type: "string"
       responses:
         200:
-          description: Returns salary estimation
+          description: "Returns salary estimation"
           schema:
-            $ref: '#/definitions/Estimation'
+            $ref: "#/definitions/Estimation"
         404:
-          description: User not found / Network doesn't exist
+          description: "User not found / Network doesn't exist"
           schema:
-            $ref: '#/definitions/Error'
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Analysis"
 definitions:
   User:
-    type: object
+    type: "object"
     properties:
       id:
-        type: string
-        description: internal user id
+        type: "string"
+        description: "internal user id"
       username:
-        type: string
-        description: username
+        type: "string"
+        description: "username"
       password:
-        type: string
-        description: encrypted password
+        type: "string"
+        description: "encrypted password"
       xingId:
-        type: string
-        description: xingId of connected profile
+        type: "string"
+        description: "xingId of connected profile"
       linkedInProfile:
-        type: string
-        description: linkedIn of connected profile
+        type: "string"
+        description: "linkedIn of connected profile"
       xingAccessToken:
-        type: string
-        description: accessToken for xing api
+        type: "string"
+        description: "accessToken for xing api"
       linkedInAccessToken:
-        type: string
-        description: accessToken for linkedIn api
+        type: "string"
+        description: "accessToken for linkedIn api"
     xml:
-      name: user
+      name: "user"
   SocialMediaUser:
-    type: object
+    type: "object"
     properties:
       gender:
-        type: boolean
-        description: gender of user
+        type: "boolean"
+        description: "gender of user"
       last_name:
-        type: string
-        description: last name of user
+        type: "string"
+        description: "last name of user"
       first_name:
-        type: string
-        description: first name of user
+        type: "string"
+        description: "first name of user"
       employment_status:
-        type: string
-        description: employment status of user
+        type: "string"
+        description: "employment status of user"
       id:
-        type: string
-        description: social media id
+        type: "string"
+        description: "social media id"
       employment:
-        type: object
-        items:
-          $ref: '#/definitions/Employment'
+        type: "object"
+        properties: {}
     xml:
-      name: user
+      name: "user"
   Employment:
-    type: object
+    type: "object"
     properties:
       begin_date:
-        type: string
-        description: Start of employment
+        type: "string"
+        description: "Start of employment"
       end_date:
-        type: string
-        description: End of employment
+        type: "string"
+        description: "End of employment"
       description:
-        type: string
-        description: Employment description
+        type: "string"
+        description: "Employment description"
       industry:
-        type: string
-        description: category name of company
+        type: "string"
+        description: "category name of company"
       career_level:
-        type: string
-        description: job level of user
+        type: "string"
+        description: "job level of user"
       title:
-        type: string
-        description: Official name of employment
+        type: "string"
+        description: "Official name of employment"
     xml:
-      name: employment
+      name: "employment"
   Estimation:
-    type: object
+    type: "object"
     properties:
       salary_min:
-        type: number
-        format: double
-        description: min estimated salary
+        type: "number"
+        format: "double"
+        description: "min estimated salary"
       salary_max:
-        type: number
-        format: double
-        description: max estimated salary
+        type: "number"
+        format: "double"
+        description: "max estimated salary"
       salary_median:
-        type: number
-        format: double
-        description: average estimated salary
+        type: "number"
+        format: "double"
+        description: "average estimated salary"
       jobTitle:
-        type: string
-        description: Used job name for analysis
+        type: "string"
+        description: "Used job name for analysis"
     xml:
-      name: estimation
+      name: "estimation"
   Error:
-    type: object
+    type: "object"
     properties:
       code:
-        type: integer
-        format: int32
+        type: "integer"
+        format: "int32"
       message:
-        type: string
+        type: "string"
       fields:
-        type: string
+        type: "string"
     xml:
-      name: error
+      name: "error"
