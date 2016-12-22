@@ -26,7 +26,12 @@ module.exports.estimate = function (req, res) {
 		v        : API_VERSION
 	});
 
-	ResponseUtil.getResponseAsString(config, true, function (statusCode, response) {
-		ResponseUtil.sendResponse(res, statusCode, JSON.parse(response), 'application/xml', 'response');
+	ResponseUtil.getResponseAsString(config, true, function (response, err) {
+		if (!err) {
+			ResponseUtil.sendResponse(res, 200, JSON.parse(response), 'application/xml', 'response');
+		}
+		else {
+			ResponseUtil.sendResponse(res, err.code, err, 'application/xml', 'response');
+		}
 	});
 };

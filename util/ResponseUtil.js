@@ -4,13 +4,15 @@
 var https       = require('https');
 var http        = require('http');
 var _           = require('lodash');
+
 var JSONXMLUtil = require('./JSONXMLUtil');
+var Error = require('../models/Error');
 
 /**
  * This callback is displayed as part of the Requester class.
  * @callback getResponseAsString~callback
- * @param {number} statusCode
  * @param {string} responseMessage
+ * @param {Error} [err]
  */
 
 /**
@@ -60,13 +62,17 @@ module.exports.getResponseAsString = function (config, secure, cb) {
 				statusCode = parseInt(str.match(/\s\d+/)[0]);
 			}
 
-			cb(statusCode, str);
+			if (statusCode === 200) {
+				cb(str);
+			}
+			else {
+				cb('', new Error(statusCode, str, ''))
+			}
 		});
 	}
 
 	(secure ? https : http).request(config, callback).on('error', function (e) {
-		console.log('Got error: ' + e.message);
-		cb(500, '');
+		cb('', new Error(500, e.message, ''));
 	}).end();
 };
 

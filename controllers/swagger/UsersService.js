@@ -56,11 +56,16 @@ exports.usersIdGET = function (args, res, next) {
 	 * id (String)
 	 **/
 
-	var path   = ParamUtil.buildPath([args.id.value]);
+	var path   = ParamUtil.buildPath([args.id.value, 'basic']);
 	var config = new ResponseUtil.Configuration(HOST, PATH + path, 'get', PORT, true);
 
-	ResponseUtil.getResponseAsString(config, false, function (statusCode, response) {
-		ResponseUtil.sendResponse(res, statusCode, JSONXMLUtil.stringToJSON(response), res.req.accepts()[0]);
+	ResponseUtil.getResponseAsString(config, false, function (response, err) {
+		if (!err) {
+			ResponseUtil.sendResponse(res, 200, JSONXMLUtil.stringToJSON(response), res.req.accepts()[0]);
+		}
+		else {
+			ResponseUtil.sendResponse(res, err.code, err, res.req.accepts()[0]);
+		}
 	});
 };
 
@@ -70,6 +75,14 @@ exports.usersIdPUT = function (args, res, next) {
 	 * id (String)
 	 * user (User)
 	 **/
+
+		//TODO get existing user
+		//TODO throw 404 when not found
+
+		//TODO update existing user with request data
+
+		//TODO perform update
+
 	var examples                 = {};
 	examples['application/json'] = {
 		"xingAccessToken"    : "aeiou",
@@ -94,10 +107,14 @@ exports.usersPOST = function (args, res, next) {
 	/**
 	 * parameters expected in the args:
 	 * provider (String)
-	 * user (User)
+	 * user (User) basic provider only
 	 **/
 
-		//TODO determine provider and start oauth signIn + create or create basic user with password
+		//TODO get data from passport session @denny (@jens setze vorerst alle social media params auf 'NULL')
+
+		//TODO create new user @see models/User
+
+		//TODO update new user with new data
 
 	var examples                 = {};
 	examples['application/json'] = {
