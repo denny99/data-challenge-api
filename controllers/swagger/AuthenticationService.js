@@ -24,7 +24,7 @@ exports.usersAuthenticateGET = function (args, res, next) {
 	else {
 		res.end();
 	}
-  
+
 }
 
 exports.usersIdConnectNetworkGET = function (args, res, next) {
@@ -42,6 +42,6 @@ exports.usersIdConnectNetworkGET = function (args, res, next) {
 	else {
 		res.end();
 	}
-  
+
 }
 

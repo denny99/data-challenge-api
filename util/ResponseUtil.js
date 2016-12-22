@@ -33,7 +33,9 @@ module.exports.Configuration = function (host, path, method, port, teiid) {
 	if (teiid) {
 		this.headers =
 			{
-				'Authorization': 'Basic ' + new Buffer(process.env.teiid_username + ':' + process.env.teiid_password).toString('base64')
+				'Authorization': 'Basic ' +
+				new Buffer(process.env.teiid_username + ':' + process.env.teiid_password).toString(
+					'base64')
 			};
 	}
 };
@@ -89,7 +91,8 @@ module.exports.sendResponse = function (res, statusCode, content, contentType, x
 		if (typeof content === 'object') {
 			switch (contentType) {
 				case 'application/xml':
-					content = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + JSONXMLUtil.jsonToXMLSting(content, xmlParent);
+					content = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + JSONXMLUtil.jsonToXMLSting(
+							content, xmlParent);
 					break;
 				default:
 					content = JSON.stringify(content);

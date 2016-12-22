@@ -23,7 +23,7 @@ exports.usersIdConnectNetworkDELETE = function (args, res, next) {
 	else {
 		res.end();
 	}
-  
+
 }
 
 exports.usersIdConnectNetworkGET = function (args, res, next) {
@@ -41,7 +41,7 @@ exports.usersIdConnectNetworkGET = function (args, res, next) {
 	else {
 		res.end();
 	}
-  
+
 }
 
 exports.usersNetworkIdGET = function (args, res, next) {
@@ -73,6 +73,6 @@ exports.usersNetworkIdGET = function (args, res, next) {
 	else {
 		res.end();
 	}
-  
+
 }
 
