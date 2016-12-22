@@ -9,7 +9,7 @@ var JSONXMLUtil = require('./JSONXMLUtil');
 var Error = require('../models/Error');
 
 /**
- * This callback is displayed as part of the Requester class.
+ *
  * @callback getResponseAsString~callback
  * @param {string} responseMessage
  * @param {Error} [err]
