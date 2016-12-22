@@ -37,30 +37,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "Users"
-    post:
-      tags:
-      - "Users"
-      summary: "create new user"
-      description: "Create new basic user"
-      operationId: "usersPOST"
-      parameters:
-      - in: "body"
-        name: "user"
-        description: "user with username and password"
-        required: false
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        201:
-          description: "User created"
-          schema:
-            $ref: "#/definitions/User"
-        400:
-          description: "Missing parameters"
-          schema:
-            $ref: "#/definitions/Error"
-      x-swagger-router-controller: "Users"
-  /users/authenticate:
+  /users/authenticate/{provider}:
     get:
       tags:
       - "Authentication"
@@ -68,6 +45,15 @@ paths:
       description: "Perform Basic login"
       operationId: "usersAuthenticateGET"
       parameters:
+      - name: "provider"
+        in: "path"
+        description: "provider used for login"
+        required: true
+        type: "string"
+        enum:
+        - "basic"
+        - "xing"
+        - "linkedIn"
       - name: "username"
         in: "header"
         description: "username to use for login"
@@ -88,6 +74,39 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "Authentication"
+  /users/provider/{provider}:
+    post:
+      tags:
+      - "Users"
+      summary: "create new user"
+      description: "Create new basic user"
+      operationId: "usersPOST"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "user with username and password for basic provider"
+        required: false
+        schema:
+          $ref: "#/definitions/User"
+      - name: "provider"
+        in: "path"
+        description: "provider used for login"
+        required: true
+        type: "string"
+        enum:
+        - "basic"
+        - "xing"
+        - "linkedIn"
+      responses:
+        201:
+          description: "User created"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Missing parameters"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Users"
   /users/{id}:
     get:
       tags:

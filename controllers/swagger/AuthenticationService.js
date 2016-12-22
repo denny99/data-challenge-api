@@ -3,6 +3,7 @@
 exports.usersAuthenticateGET = function (args, res, next) {
 	/**
 	 * parameters expected in the args:
+	 * provider (String)
 	 * username (String)
 	 * password (String)
 	 **/
@@ -23,7 +24,7 @@ exports.usersAuthenticateGET = function (args, res, next) {
 	else {
 		res.end();
 	}
-
+  
 }
 
 exports.usersIdConnectNetworkGET = function (args, res, next) {
@@ -41,6 +42,6 @@ exports.usersIdConnectNetworkGET = function (args, res, next) {
 	else {
 		res.end();
 	}
-
+  
 }
 

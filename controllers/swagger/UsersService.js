@@ -21,7 +21,14 @@ exports.usersGET = function (args, res, next) {
 		"last_name"        : "aeiou",
 		"employment_status": "aeiou",
 		"id"               : "aeiou",
-		"employment"       : "{}",
+		"employment"       : {
+			"end_date"   : "aeiou",
+			"begin_date" : "aeiou",
+			"name"       : "aeiou",
+			"description": "aeiou",
+			"industry"   : "aeiou",
+			"title"      : "aeiou"
+		},
 		"first_name"       : "aeiou"
 	}];
 	if (Object.keys(examples).length > 0) {
@@ -31,7 +38,7 @@ exports.usersGET = function (args, res, next) {
 	else {
 		res.end();
 	}
-  
+
 }
 
 exports.usersIdDELETE = function (args, res, next) {
@@ -86,6 +93,7 @@ exports.usersIdPUT = function (args, res, next) {
 exports.usersPOST = function (args, res, next) {
 	/**
 	 * parameters expected in the args:
+	 * provider (String)
 	 * user (User)
 	 **/
 	var examples                 = {};
@@ -105,6 +113,6 @@ exports.usersPOST = function (args, res, next) {
 	else {
 		res.end();
 	}
-  
+
 }
 

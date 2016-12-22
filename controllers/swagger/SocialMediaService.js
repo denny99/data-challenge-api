@@ -23,7 +23,7 @@ exports.usersIdConnectNetworkDELETE = function (args, res, next) {
 	else {
 		res.end();
 	}
-
+  
 }
 
 exports.usersIdConnectNetworkGET = function (args, res, next) {
@@ -41,7 +41,7 @@ exports.usersIdConnectNetworkGET = function (args, res, next) {
 	else {
 		res.end();
 	}
-
+  
 }
 
 exports.usersNetworkIdGET = function (args, res, next) {
@@ -56,7 +56,14 @@ exports.usersNetworkIdGET = function (args, res, next) {
 		"last_name"        : "aeiou",
 		"employment_status": "aeiou",
 		"id"               : "aeiou",
-		"employment"       : "{}",
+		"employment"       : {
+			"end_date"   : "aeiou",
+			"begin_date" : "aeiou",
+			"name"       : "aeiou",
+			"description": "aeiou",
+			"industry"   : "aeiou",
+			"title"      : "aeiou"
+		},
 		"first_name"       : "aeiou"
 	};
 	if (Object.keys(examples).length > 0) {
@@ -66,6 +73,6 @@ exports.usersNetworkIdGET = function (args, res, next) {
 	else {
 		res.end();
 	}
-
+  
 }
 
