@@ -10,7 +10,16 @@
  * @constructor
  */
 module.exports = function Error(code, message, fields) {
-	this.code    = code;
+	this.code    = resolveCode(code);
 	this.message = message;
 	this.fields  = fields;
+
+	function resolveCode(code) {
+		if (typeof code === 'number') {
+			return code;
+		}
+		if (code === 'REQUIRED') {
+			return 400;
+		}
+	}
 };
