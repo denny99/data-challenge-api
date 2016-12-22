@@ -1,9 +1,9 @@
 /**
  * Created by admin on 20.12.16.
  */
-var https       = require('https');
-var http        = require('http');
-var _           = require('lodash');
+var https = require('https');
+var http  = require('http');
+var _     = require('lodash');
 
 var JSONXMLUtil = require('./JSONXMLUtil');
 var Error = require('../models/Error');
@@ -56,17 +56,16 @@ module.exports.getResponseAsString = function (config, secure, cb) {
 		//the whole response has been recieved, so we just print it out here
 		response.on('end', function () {
 			var statusCode = response.statusCode || 200;
-
-			//jboss always returns 200 and puts status in xml
-			if (_.includes(str, 'HTTP Status')) {
-				statusCode = parseInt(str.match(/\s\d+/)[0]);
-			}
-
-			if (statusCode === 200) {
+			if (statusCode >= 200 && statusCode <= 299) {
 				cb(str);
 			}
 			else {
-				cb('', new Error(statusCode, str, ''))
+				var jbossError = getJBossError(str);
+				if (jbossError) {
+					statusCode = jbossError;
+				}
+				var error = new Error(statusCode, str, '');
+				cb('', error);
 			}
 		});
 	}
@@ -90,7 +89,7 @@ module.exports.sendResponse = function (res, statusCode, content, contentType, x
 		if (typeof content === 'object') {
 			switch (contentType) {
 				case 'application/xml':
-					content = JSONXMLUtil.jsonToXMLSting(content, xmlParent);
+					content = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + JSONXMLUtil.jsonToXMLSting(content, xmlParent);
 					break;
 				default:
 					content = JSON.stringify(content);
@@ -104,3 +103,18 @@ module.exports.sendResponse = function (res, statusCode, content, contentType, x
 		res.status(statusCode).end();
 	}
 };
+
+/**
+ *
+ * @param {string} responseString
+ * @return {Number}
+ */
+function getJBossError(responseString) {
+	if (_.includes(responseString, 'TEIID50092')) {
+		return 404;
+	}
+	//jboss always returns 200 and puts status in xml
+	if (_.includes(responseString, 'HTTP Status')) {
+		return parseInt(responseString.match(/\s\d+/)[0]);
+	}
+}

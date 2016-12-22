@@ -14,7 +14,7 @@ var uuidV4 = require('uuid/v4');
  * @param {string} [linkedInAccessToken]
  * @constructor
  */
-module.exports.User = function (share, username, password, xingId, xingAccessToken, linkedInId, linkedInAccessToken) {
+module.exports = function User(share, username, password, xingId, xingAccessToken, linkedInId, linkedInAccessToken) {
 	this.userId              = uuidV4();
 	this.share               = share || 0;
 	this.username            = username || 'NULL';

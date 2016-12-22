@@ -9,7 +9,7 @@
  * @param {string} [fields]
  * @constructor
  */
-module.exports.Error = function (code, message, fields) {
+module.exports = function Error(code, message, fields) {
 	this.code    = code;
 	this.message = message;
 	this.fields  = fields;
