@@ -39,7 +39,7 @@ exports.usersGET = function (args, res, next) {
 		res.end();
 	}
 
-}
+};
 
 exports.usersIdDELETE = function (args, res, next) {
 	/**
@@ -96,6 +96,9 @@ exports.usersPOST = function (args, res, next) {
 	 * provider (String)
 	 * user (User)
 	 **/
+
+		//TODO determine provider and start oauth signIn + create or create basic user with password
+
 	var examples                 = {};
 	examples['application/json'] = {
 		"xingAccessToken"    : "aeiou",
