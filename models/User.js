@@ -2,6 +2,7 @@
  * Created by admin on 22.12.16.
  */
 var uuidV4 = require('uuid/v4');
+var _ = require('lodash');
 
 /**
  *
@@ -23,4 +24,13 @@ module.exports = function User(share, username, password, xingId, xingAccessToke
 	this.xingAccessToken     = xingAccessToken || 'NULL';
 	this.linkedInId          = linkedInId || 'NULL';
 	this.linkedInAccessToken = linkedInAccessToken || 'NULL';
+
+	this.getPublicDoc = function () {
+		var result = _.cloneDeep(this);
+		delete result.password;
+		delete result.xingAccessToken;
+		delete result.linkedInAccessToken;
+
+		return result;
+	}
 };
