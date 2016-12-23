@@ -11,7 +11,7 @@ module.exports.getById = function (req, res) {
 	var config = new ResponseUtil.Configuration(SEARCH_URL, SEARCH_PATH + req.query.id, 'get');
 
 	config.path += ParamUtil.buildQuery({
-		fields                : req.query.fields,
+		fields                : req.query.userfields,
 		oauth_consumer_key    : req.query.oauthconsumerkey,
 		oauth_token           : req.query.oauthtoken,
 		oauth_signature_method: req.query.oauthsignaturemethod,
