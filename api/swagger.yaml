@@ -298,9 +298,12 @@ definitions:
   User:
     type: "object"
     properties:
-      id:
+      userId:
         type: "string"
         description: "internal user id"
+      share:
+        type: "number"
+        description: "share data with other users"
       username:
         type: "string"
         description: "username"
