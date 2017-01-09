@@ -78,7 +78,35 @@ exports.usersIdPUT = function (args, res, next) {
 	 * user (User)
 	 **/
 
-		//TODO get existing user
+	var path   = ParamUtil.buildPath([args.id.value, 'basic']);
+	var config = new ResponseUtil.Configuration(HOST, PATH + path, 'get', PORT, true);
+
+	var existingUser;
+
+	ResponseUtil.getResponseAsString(config, false, function (response, err) {
+		if (!err) {
+			existingUser = JSONXMLUtil.stringToJSON(response);
+			Object.keys(args.user.value).forEach(function (key) {
+				existingUser[key] = args.user.value[key]
+			});
+			var pathUser = ParamUtil.buildPath([existingUser.userId, existingUser.share, existingUser.username, existingUser.password]);
+			var configUser = new ResponseUtil.Configuration(HOST, PATH + pathUser, 'put', PORT, true);
+			ResponseUtil.getResponseAsString(configUser, false, function (response, err) {
+				if (!err) {
+					ResponseUtil.sendResponse(res, 200, existingUser, res.req.accepts()[0]);
+				}
+				else {
+					ResponseUtil.sendResponse(res, err.code, err, res.req.accepts()[0]);
+			}
+			})
+		}
+		else {
+			ResponseUtil.sendResponse(res, err.code, err, res.req.accepts()[0]);
+		}});
+
+
+
+	//TODO get existing user
 		//TODO throw 404 when not found
 
 		//TODO update existing user with request data
