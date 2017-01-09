@@ -10,7 +10,7 @@ var fs           = require('fs');
 var helmet = require('helmet');
 
 var APIError     = require('./models/Error');
-var ResponseUtil = require('./util/ResponseUtil.js');
+var ResponseUtil = require('./util/HttpUtil.js');
 
 module.exports.init = function (cb) {
 

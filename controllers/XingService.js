@@ -1,14 +1,14 @@
 /**
  * Created by admin on 20.12.16.
  */
-var ResponseUtil = require('../util/ResponseUtil.js');
+var HttpUtil = require('../util/HttpUtil.js');
 var ParamUtil    = require('../util/ParamUtil.js');
 
 var SEARCH_URL  = 'api.xing.com';
 var SEARCH_PATH = '/v1/users/';
 
 module.exports.getById = function (req, res) {
-	var config = new ResponseUtil.Configuration(SEARCH_URL, SEARCH_PATH + req.query.id, 'get');
+	var config = new HttpUtil.Configuration(SEARCH_URL, SEARCH_PATH + req.query.id, 'get');
 
 	config.path += ParamUtil.buildQuery({
 		fields                : req.query.userfields,
@@ -21,18 +21,18 @@ module.exports.getById = function (req, res) {
 		oauth_signature       : req.query.oauthsignature
 	});
 
-	ResponseUtil.getResponseAsString(config, true, function (response, err) {
+	HttpUtil.sendHttpRequest(config, true, function (response, err) {
 		if (!err) {
-			ResponseUtil.sendResponse(res, 200, JSON.parse(response), 'application/xml', 'response');
+			HttpUtil.sendResponse(res, 200, JSON.parse(response), 'application/xml', 'response');
 		}
 		else {
-			ResponseUtil.sendResponse(res, err.code, err, 'application/xml', 'response');
+			HttpUtil.sendResponse(res, err.code, err, 'application/xml', 'response');
 		}
 	});
 };
 
 module.exports.find = function (req, res) {
-	var config = new ResponseUtil.Configuration(SEARCH_URL, SEARCH_PATH + 'find.json', 'get');
+	var config = new HttpUtil.Configuration(SEARCH_URL, SEARCH_PATH + 'find.json', 'get');
 
 	config.path += ParamUtil.buildQuery(
 		{
@@ -48,12 +48,12 @@ module.exports.find = function (req, res) {
 			oauth_signature       : req.query.oauthsignature
 		});
 
-	ResponseUtil.getResponseAsString(config, true, function (response, err) {
+	HttpUtil.sendHttpRequest(config, true, function (response, err) {
 		if (!err) {
-			ResponseUtil.sendResponse(res, 200, JSON.parse(response), 'application/xml', 'response');
+			HttpUtil.sendResponse(res, 200, JSON.parse(response), 'application/xml', 'response');
 		}
 		else {
-			ResponseUtil.sendResponse(res, err.code, err, 'application/xml', 'response');
+			HttpUtil.sendResponse(res, err.code, err, 'application/xml', 'response');
 		}
 	});
 };

@@ -1,7 +1,7 @@
 /**
  * Created by admin on 20.12.16.
  */
-var ResponseUtil = require('../util/ResponseUtil.js');
+var HttpUtil = require('../util/HttpUtil.js');
 var ParamUtil    = require('../util/ParamUtil.js');
 
 var SEARCH_URL  = 'api.glassdoor.com';
@@ -12,7 +12,7 @@ var FORMAT      = 'json';
 var ACTION      = 'jobs-prog';
 
 module.exports.estimate = function (req, res) {
-	var config = new ResponseUtil.Configuration(SEARCH_URL, SEARCH_PATH, 'get');
+	var config = new HttpUtil.Configuration(SEARCH_URL, SEARCH_PATH, 'get');
 
 	config.path += ParamUtil.buildQuery({
 		't.p'    : req.query.appId,
@@ -26,12 +26,12 @@ module.exports.estimate = function (req, res) {
 		v        : API_VERSION
 	});
 
-	ResponseUtil.getResponseAsString(config, true, function (response, err) {
+	HttpUtil.sendHttpRequest(config, true, function (response, err) {
 		if (!err) {
-			ResponseUtil.sendResponse(res, 200, JSON.parse(response), 'application/xml', 'response');
+			HttpUtil.sendResponse(res, 200, JSON.parse(response), 'application/xml', 'response');
 		}
 		else {
-			ResponseUtil.sendResponse(res, err.code, err, 'application/xml', 'response');
+			HttpUtil.sendResponse(res, err.code, err, 'application/xml', 'response');
 		}
 	});
 };

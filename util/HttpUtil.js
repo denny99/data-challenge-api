@@ -10,7 +10,7 @@ var Error = require('../models/Error');
 
 /**
  *
- * @callback getResponseAsString~callback
+ * @callback sendHttpRequest~callback
  * @param {string} responseMessage
  * @param {Error} [err]
  */
@@ -44,9 +44,9 @@ module.exports.Configuration = function (host, path, method, port, teiid) {
  *
  * @param {Configuration} config
  * @param {boolean} secure
- * @param {getResponseAsString~callback} cb
+ * @param {sendHttpRequest~callback} cb
  */
-module.exports.getResponseAsString = function (config, secure, cb) {
+module.exports.sendHttpRequest = function (config, secure, cb) {
 	function callback(response) {
 		var str = '';
 

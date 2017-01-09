@@ -313,9 +313,9 @@ definitions:
       xingId:
         type: "string"
         description: "xingId of connected profile"
-      linkedInProfile:
+      linkedInId:
         type: "string"
-        description: "linkedIn of connected profile"
+        description: "linkedInId of connected profile"
       xingAccessToken:
         type: "string"
         description: "accessToken for xing api"
