@@ -104,33 +104,6 @@ exports.usersIdPUT = function (args, res, next) {
 			ResponseUtil.sendResponse(res, err.code, err, res.req.accepts()[0]);
 		}});
 
-
-
-	//TODO get existing user
-		//TODO throw 404 when not found
-
-		//TODO update existing user with request data
-
-		//TODO perform update
-
-	var examples                 = {};
-	examples['application/json'] = {
-		"xingAccessToken"    : "aeiou",
-		"password"           : "aeiou",
-		"linkedInAccessToken": "aeiou",
-		"xingId"             : "aeiou",
-		"linkedInProfile"    : "aeiou",
-		"id"                 : "aeiou",
-		"username"           : "aeiou"
-	};
-	if (Object.keys(examples).length > 0) {
-		res.setHeader('Content-Type', 'application/json');
-		res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
-	}
-	else {
-		res.end();
-	}
-
 };
 
 exports.usersPOST = function (args, res, next) {
