@@ -17,3 +17,7 @@ module.exports.usersIdConnectNetworkGET = function usersIdConnectNetworkGET(req,
 module.exports.usersNetworkIdGET = function usersNetworkIdGET(req, res, next) {
 	SocialMedia.usersNetworkIdGET(req.swagger.params, res, next);
 };
+
+module.exports.usersSearchGET = function usersSearchGET(req, res, next) {
+	SocialMedia.usersSearchGET(req.swagger.params, res, next);
+};

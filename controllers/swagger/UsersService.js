@@ -15,25 +15,18 @@ var PATH = '/DataChallenge_1/LocalUserViewModel/users';
 exports.usersGET = function (args, res, next) {
 	/**
 	 * parameters expected in the args:
-	 * keywords (String)
 	 **/
-
 	var examples                 = {};
 	examples['application/json'] = [
 		{
-			"gender"           : true,
-			"last_name"        : "aeiou",
-			"employment_status": "aeiou",
-			"id"               : "aeiou",
-			"employment"       : {
-				"end_date"   : "aeiou",
-				"begin_date" : "aeiou",
-				"name"       : "aeiou",
-				"description": "aeiou",
-				"industry"   : "aeiou",
-				"title"      : "aeiou"
-			},
-			"first_name"       : "aeiou"
+			"xingAccessToken"    : "aeiou",
+			"password"           : "aeiou",
+			"linkedInAccessToken": "aeiou",
+			"xingId"             : "aeiou",
+			"share"              : 1.3579000000000001069366817318950779736042022705078125,
+			"userId"             : "aeiou",
+			"username"           : "aeiou",
+			"linkedInId"         : "aeiou"
 		}
 	];
 	if (Object.keys(examples).length > 0) {
@@ -45,6 +38,7 @@ exports.usersGET = function (args, res, next) {
 	}
 
 };
+
 
 exports.usersIdDELETE = function (args, res, next) {
 	/**

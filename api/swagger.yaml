@@ -16,22 +16,17 @@ paths:
     get:
       tags:
       - "Users"
-      summary: "search for social media profiles"
-      description: "search for social media profiles"
+      summary: "get basic user profiles"
+      description: "get basic user profiles"
       operationId: "usersGET"
-      parameters:
-      - name: "keywords"
-        in: "query"
-        description: "word to search for in profiles (name, city, email)"
-        required: true
-        type: "string"
+      parameters: []
       responses:
         200:
           description: "Users found return results"
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/SocialMediaUser"
+              $ref: "#/definitions/User"
         400:
           description: "Missing parameters"
           schema:
@@ -79,7 +74,7 @@ paths:
       tags:
       - "Users"
       summary: "create new user"
-      description: "Create new basic user"
+      description: "Create new user using a specific provider"
       operationId: "usersPOST"
       parameters:
       - in: "body"
@@ -107,6 +102,31 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "Users"
+  /users/search:
+    get:
+      tags:
+      - "Social Media"
+      summary: "search for social media profiles"
+      description: "search for social media user profiles"
+      operationId: "usersSearchGET"
+      parameters:
+      - name: "keywords"
+        in: "query"
+        description: "word to search for in profiles (name, city, email)"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Users found return results"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/SocialMediaUser"
+        400:
+          description: "Missing parameters"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "SocialMedia"
   /users/{id}:
     get:
       tags:
