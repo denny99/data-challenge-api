@@ -60,10 +60,8 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        201:
           description: "Auth ok. User is logged in"
-          schema:
-            $ref: "#/definitions/User"
         403:
           description: "Invalid credentials"
           schema:

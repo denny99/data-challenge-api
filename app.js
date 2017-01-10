@@ -7,7 +7,8 @@ var bodyParser   = require('body-parser');
 var swaggerTools = require('swagger-tools');
 var jsyaml       = require('js-yaml');
 var fs           = require('fs');
-var helmet = require('helmet');
+var helmet   = require('helmet');
+var passport = require('passport');
 
 var APIError     = require('./models/Error');
 var ResponseUtil = require('./util/HttpUtil.js');
@@ -26,6 +27,8 @@ module.exports.init = function (cb) {
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({extended: false}));
 	app.use(cookieParser());
+	app.use(passport.initialize());
+	app.use(passport.session());
 	app.use(express.static(path.join(__dirname, 'public')));
 
 	app.use(helmet());
@@ -50,7 +53,8 @@ module.exports.init = function (cb) {
 
 // Initialize the Swagger middleware
 		swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
-			// Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
+			// Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware
+			// chain
 			app.use(middleware.swaggerMetadata());
 
 			// Validate Swagger requests
@@ -64,7 +68,7 @@ module.exports.init = function (cb) {
 
 // catch 404 and forward to error handler
 			app.use(function (req, res, next) {
-				var err    = new Error('Not Found');
+				var err  = new Error('Not Found');
 				err.code = 404;
 				next(err);
 			});
