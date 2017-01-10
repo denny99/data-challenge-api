@@ -19,7 +19,6 @@ paths:
       summary: "get basic user profiles"
       description: "get basic user profiles"
       operationId: "usersGET"
-      parameters: []
       responses:
         200:
           description: "Users found return results"
@@ -27,6 +26,29 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/User"
+        400:
+          description: "Missing parameters"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "Users"
+    post:
+      tags:
+      - "Users"
+      summary: "create new user"
+      description: "Create new user using a specific provider"
+      operationId: "usersPOST"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "user with username and password for basic provider"
+        required: false
+        schema:
+          $ref: "#/definitions/ModifiableUser"
+      responses:
+        201:
+          description: "User created"
+          schema:
+            $ref: "#/definitions/User"
         400:
           description: "Missing parameters"
           schema:
@@ -49,57 +71,39 @@ paths:
         - "basic"
         - "xing"
         - "linkedIn"
-      - name: "username"
+      - name: "Authorization"
         in: "header"
-        description: "username to use for login"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "header"
-        description: "password to use for login"
-        required: true
+        description: "Basic authorization credentials"
+        required: false
         type: "string"
       responses:
-        201:
+        204:
           description: "Auth ok. User is logged in"
         403:
           description: "Invalid credentials"
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "Authentication"
-  /users/provider/{provider}:
-    post:
+  /users/authenticate/{provider}/callback:
+    get:
       tags:
-      - "Users"
-      summary: "create new user"
-      description: "Create new user using a specific provider"
-      operationId: "usersPOST"
+      - "Authentication"
+      summary: "OAuth Callback"
+      description: "Internal callback route for oauth processes"
+      operationId: "usersAuthenticateProviderCallbackGET"
       parameters:
-      - in: "body"
-        name: "user"
-        description: "user with username and password for basic provider"
-        required: false
-        schema:
-          $ref: "#/definitions/User"
       - name: "provider"
         in: "path"
         description: "provider used for login"
         required: true
         type: "string"
         enum:
-        - "basic"
         - "xing"
         - "linkedIn"
       responses:
-        201:
-          description: "User created"
-          schema:
-            $ref: "#/definitions/User"
-        400:
-          description: "Missing parameters"
-          schema:
-            $ref: "#/definitions/Error"
-      x-swagger-router-controller: "Users"
+        204:
+          description: "Callback received"
+      x-swagger-router-controller: "Authentication"
   /users/search:
     get:
       tags:
@@ -165,7 +169,7 @@ paths:
         description: "user with updated username or password"
         required: false
         schema:
-          $ref: "#/definitions/User"
+          $ref: "#/definitions/ModifiableUser"
       responses:
         200:
           description: "User updated. Returning new object"
@@ -173,6 +177,10 @@ paths:
             $ref: "#/definitions/User"
         400:
           description: "Invalid parameters"
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: "Invalid password"
           schema:
             $ref: "#/definitions/Error"
         404:
@@ -204,7 +212,6 @@ paths:
     get:
       tags:
       - "Social Media"
-      - "Authentication"
       summary: "connect existing user with social media profile"
       description: "connect existing user with social media profile"
       operationId: "usersIdConnectNetworkGET"
@@ -313,6 +320,23 @@ paths:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "Analysis"
 definitions:
+  ModifiableUser:
+    type: "object"
+    properties:
+      share:
+        type: "number"
+        description: "share data with other users"
+      username:
+        type: "string"
+        description: "username"
+      password:
+        type: "string"
+        description: "encrypted password"
+      passwordRepeat:
+        type: "string"
+        description: "confirm encrypted password for update user"
+    xml:
+      name: "user"
   User:
     type: "object"
     properties:

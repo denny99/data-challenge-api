@@ -7,9 +7,13 @@ var Authentication = require('./AuthenticationService');
 
 
 module.exports.usersAuthenticateGET = function usersAuthenticateGET(req, res, next) {
-	Authentication.usersAuthenticateGET(req.swagger.params, res, next);
+	Authentication.usersAuthenticateGET(req.swagger.params, req, res, function (err) {
+		res.status(204).end();
+	});
 };
 
-module.exports.usersIdConnectNetworkGET = function usersIdConnectNetworkGET(req, res, next) {
-	Authentication.usersIdConnectNetworkGET(req.swagger.params, res, next);
+module.exports.usersAuthenticateProviderCallbackGET = function usersAuthenticateProviderCallbackGET(req, res, next) {
+	Authentication.usersAuthenticateProviderCallbackGET(req.swagger.params, req, res, function (err) {
+		res.status(204).end();
+	});
 };

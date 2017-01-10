@@ -12,6 +12,19 @@ var HOST = process.env.vdb_host;
 var PORT = process.env.vdb_port;
 var PATH = '/DataChallenge_1/LocalUserViewModel/users';
 
+/**
+ * @callback persistUserCb
+ * @param {User} [user]
+ * @param {Error} [err]
+ */
+
+
+/**
+ *
+ * @param args
+ * @param res
+ * @param next
+ */
 exports.usersGET = function (args, res, next) {
 	/**
 	 * parameters expected in the args:
@@ -64,7 +77,7 @@ exports.usersIdGET = function (args, res, next) {
 	 * id (String)
 	 **/
 
-	var path   = ParamUtil.buildPath([args.id.value, 'basic']);
+	var path   = ParamUtil.buildPath([args.id.value]);
 	var config = new HttpUtil.Configuration(HOST, PATH + path, 'get', PORT, true);
 
 	HttpUtil.sendHttpRequest(config, false, function (response, err) {
@@ -94,13 +107,21 @@ exports.usersIdPUT = function (args, res, next) {
 		if (!err) {
 
 			//merge old and new values
-			existingUser      = JSONXMLUtil.stringToJSON(response);
+			existingUser = JSONXMLUtil.stringToJSON(response);
+
+			if (existingUser.password !== args.user.value.passwordRepeat) {
+				return HttpUtil.sendResponse(res, 403, undefined, res.req.accepts()[0], 'error');
+			}
+
 			mergedUser        = new User();
 			mergedUser.userId = existingUser.userId;
+
+			//refresh with new data
 			_.assignInWith(mergedUser, existingUser, args.user.value, function (objValue, srcValue, key) {
 				//
-				if (key === 'userId' || key === 'xingId' || key === 'xingAccessToken' || key === 'linkedInId' ||
-					key === 'linkedInAccessToken') {
+				if (key === 'userId' || key === 'xingId' || key === 'xingAccessToken' || key === 'xingAccessSecret' ||
+					key === 'linkedInId' ||
+					key === 'linkedInAccessToken' || key === 'linkedInRefreshToken') {
 					return objValue || 'NULL';
 				}
 				else {
@@ -109,8 +130,8 @@ exports.usersIdPUT = function (args, res, next) {
 			});
 			var userList = [
 				mergedUser.userId, mergedUser.share, mergedUser.username, mergedUser.password,
-				mergedUser.xingId, mergedUser.xingAccessToken, mergedUser.linkedInId,
-				mergedUser.linkedInAccessToken
+				mergedUser.xingId, mergedUser.xingAccessToken, mergedUser.xingAccessSecret, mergedUser.linkedInId,
+				mergedUser.linkedInAccessToken, mergedUser.linkedInRefreshToken
 			];
 
 			//update user in db
@@ -132,49 +153,53 @@ exports.usersIdPUT = function (args, res, next) {
 
 };
 
-exports.usersPOST = function (args, res, next) {
-	/**
-	 * parameters expected in the args:
-	 * provider (String)
-	 * user (User) basic provider only
-	 **/
-	var user;
-
-	switch (args.provider.value) {
-		case 'basic':
-			user = new User(args.user.value.share, args.user.value.username, args.user.value.password);
-			break;
-		case 'default':
-			HttpUtil.sendResponse(res, 400, 'provider not supported', res.req.accepts()[0], 'error');
-			break;
-	}
-
+/**
+ *
+ * @param {User} user
+ * @param {persistUserCb} cb
+ */
+exports.persistUser = function (user, cb) {
 	var path   = ParamUtil.buildPath([user.userId]);
 	var config = new HttpUtil.Configuration(HOST, PATH + path, 'post', PORT, true);
 	HttpUtil.sendHttpRequest(config, false, function (response, err) {
 		if (!err) {
 			var userList  = [
 				user.userId, user.share, user.username, user.password, user.xingId,
-				user.xingAccessToken, user.linkedInId, user.linkedInAccessToken
+				user.xingAccessToken, user.xingAccessSecret, user.linkedInId, user.linkedInAccessToken,
+				user.linkedInRefreshToken
 			];
 			path          = ParamUtil.buildPath(userList);
 			var newConfig = new HttpUtil.Configuration(HOST, PATH + path, 'put', PORT, true);
 			HttpUtil.sendHttpRequest(newConfig, false, function (response, err) {
 				if (!err) {
-					HttpUtil.sendResponse(res, 200, JSONXMLUtil.stringToJSON(response), res.req.accepts()[0], 'user');
+					cb(JSONXMLUtil.stringToJSON(response));
 				}
 				else {
-					HttpUtil.sendResponse(res, err.code, err, res.req.accepts()[0], 'error');
+					cb(undefined, err);
 				}
 			})
 
 		}
 		else {
+			cb(undefined, err);
+		}
+	});
+};
+
+exports.usersPOST = function (args, res, next) {
+	/**
+	 * parameters expected in the args:
+	 * user (User)
+	 **/
+	var user = new User(args.user.value.share, args.user.value.username, args.user.value.password);
+
+	exports.persistUser(user, function (user, err) {
+		if (!err) {
+			HttpUtil.sendResponse(res, 200, user, res.req.accepts()[0], 'user');
+		}
+		else {
 			HttpUtil.sendResponse(res, err.code, err, res.req.accepts()[0], 'error');
 		}
 	});
-
-
-	//TODO get data from passport session @denny
 };
 

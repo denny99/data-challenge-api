@@ -4,6 +4,10 @@
 
 /**
  * @class Error
+ * @property {number} code
+ * @property {string} message
+ * @property {string} fields
+
  * @param {number} code
  * @param {string} message
  * @param {string} [fields]
@@ -21,5 +25,6 @@ module.exports = function Error(code, message, fields) {
 		if (code === 'REQUIRED') {
 			return 400;
 		}
+		return 500;
 	}
 };
