@@ -1,27 +1,59 @@
 /**
  * Created by admin on 20.12.16.
  */
-var ResponseUtil = require("../util/responseUtil.js");
+var HttpUtil = require('../util/HttpUtil.js');
+var ParamUtil    = require('../util/ParamUtil.js');
 
-var SEARCH_URL  = "api.xing.com";
-var SEARCH_PATH = "/v1/users/";
+var SEARCH_URL  = 'api.xing.com';
+var SEARCH_PATH = '/v1/users/';
 
 module.exports.getById = function (req, res) {
-	var config = {
-		host: SEARCH_URL,
-		path: SEARCH_PATH
-	};
+	var config = new HttpUtil.Configuration(SEARCH_URL, SEARCH_PATH + req.query.id, 'get');
 
-	config.path += "?";
+	config.path += ParamUtil.buildQuery({
+		fields                : req.query.userfields,
+		oauth_consumer_key    : req.query.oauthconsumerkey,
+		oauth_token           : req.query.oauthtoken,
+		oauth_signature_method: req.query.oauthsignaturemethod,
+		oauth_timestamp       : req.query.oauthtimestamp,
+		oauth_nonce           : req.query.oauthnonce,
+		oauth_version         : req.query.oauthversion,
+		oauth_signature       : req.query.oauthsignature
+	});
 
-	config.path += "fields=" + req.query.fields;
-	config.path += "&oauth_consumer_key=" + req.query.oauthconsumerkey;
-	config.path += "&oauth_token=" + req.query.oauthtoken;
-	config.path += "&oauth_signature_method=" + req.query.oauthsignaturemethod;
-	config.path += "&oauth_timestamp=" + req.query.oauthtimestamp;
-	config.path += "&oauth_nonce=" + req.query.oauthnonce;
-	config.path += "&oauth_version=" + req.query.oauthversion;
-	config.path += "&oauth_signature=" + req.query.oauthsignature;
+	HttpUtil.sendHttpRequest(config, true, function (response, err) {
+		if (!err) {
+			HttpUtil.sendResponse(res, 200, JSON.parse(response), 'application/xml', 'response');
+		}
+		else {
+			HttpUtil.sendResponse(res, err.code, err, 'application/xml', 'response');
+		}
+	});
+};
 
-	ResponseUtil.getResponseAsString(res, config);
+module.exports.find = function (req, res) {
+	var config = new HttpUtil.Configuration(SEARCH_URL, SEARCH_PATH + 'find.json', 'get');
+
+	config.path += ParamUtil.buildQuery(
+		{
+			keywords              : req.query.keywords,
+			user_fields           : req.query.userfields,
+			limit                 : req.query.limit || 100,
+			oauth_consumer_key    : req.query.oauthconsumerkey,
+			oauth_token           : req.query.oauthtoken,
+			oauth_signature_method: req.query.oauthsignaturemethod,
+			oauth_timestamp       : req.query.oauthtimestamp,
+			oauth_nonce           : req.query.oauthnonce,
+			oauth_version         : req.query.oauthversion,
+			oauth_signature       : req.query.oauthsignature
+		});
+
+	HttpUtil.sendHttpRequest(config, true, function (response, err) {
+		if (!err) {
+			HttpUtil.sendResponse(res, 200, JSON.parse(response), 'application/xml', 'response');
+		}
+		else {
+			HttpUtil.sendResponse(res, err.code, err, 'application/xml', 'response');
+		}
+	});
 };

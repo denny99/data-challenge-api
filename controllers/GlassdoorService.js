@@ -1,32 +1,37 @@
 /**
  * Created by admin on 20.12.16.
  */
-var ResponseUtil = require("../util/responseUtil.js");
+var HttpUtil = require('../util/HttpUtil.js');
+var ParamUtil    = require('../util/ParamUtil.js');
 
-var SEARCH_URL  = "api.glassdoor.com";
-var SEARCH_PATH = "/api/api.htm";
+var SEARCH_URL  = 'api.glassdoor.com';
+var SEARCH_PATH = '/api/api.htm';
 
-var API_VERSION = "1";
-var FORMAT      = "json";
-var ACTION      = "jobs-prog";
+var API_VERSION = '1';
+var FORMAT      = 'json';
+var ACTION      = 'jobs-prog';
 
 module.exports.estimate = function (req, res) {
-	var config = {
-		host: SEARCH_URL,
-		path: SEARCH_PATH
-	};
+	var config = new HttpUtil.Configuration(SEARCH_URL, SEARCH_PATH, 'get');
 
-	config.path += "?";
+	config.path += ParamUtil.buildQuery({
+		't.p'    : req.query.appId,
+		't.k'    : req.query.appKey,
+		jobTitle : req.query.title,
+		countryId: req.query.countryId,
+		userip   : req.query.userip,
+		useragent: req.query.useragent,
+		action   : ACTION,
+		format   : FORMAT,
+		v        : API_VERSION
+	});
 
-	config.path += "t.p=" + req.query.appId;
-	config.path += "&t.k=" + req.query.appKey;
-	config.path += "&jobTitle=" + req.query.title;
-	config.path += "&countryId=" + req.query.countryId;
-	config.path += "&userip=" + req.query.userip;
-	config.path += "&useragent=" + req.query.useragent;
-	config.path += "&action=" + ACTION;
-	config.path += "&format=" + FORMAT;
-	config.path += "&v=" + API_VERSION;
-
-	ResponseUtil.getResponseAsString(res, config);
+	HttpUtil.sendHttpRequest(config, true, function (response, err) {
+		if (!err) {
+			HttpUtil.sendResponse(res, 200, JSON.parse(response), 'application/xml', 'response');
+		}
+		else {
+			HttpUtil.sendResponse(res, err.code, err, 'application/xml', 'response');
+		}
+	});
 };
