@@ -226,6 +226,9 @@ paths:
         description: "network name (xing, linkedIn) to join user"
         required: true
         type: "string"
+        enum:
+        - "xing"
+        - "linkedIn"
       responses:
         200:
           description: "Returns authorization page of network"
@@ -281,6 +284,9 @@ paths:
         description: "network name (xing, linkedIn) of user"
         required: true
         type: "string"
+        enum:
+        - "xing"
+        - "linkedIn"
       responses:
         200:
           description: "Returns found social media profile"
@@ -309,6 +315,9 @@ paths:
         description: "network name (xing, linkedIn) of user"
         required: true
         type: "string"
+        enum:
+        - "xing"
+        - "linkedIn"
       responses:
         200:
           description: "Returns salary estimation"

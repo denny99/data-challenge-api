@@ -1,0 +1,25 @@
+//
+   Created by jens on 11.01.2017.
+extends layout
+
+block content
+    .container
+        .row
+            .col-xs-6
+                h2 profile
+        .row
+            .col-xs-6
+                .form-group
+                    a(href="/api/v1/users/authenticate/linkedIn" type="button" class="btn btn-primary") LinkedIn
+                .form-group
+                    a(href="/api/v1/users/authenticate/xing" type="button" class="btn btn-success") Xing
+                .checkbox
+                    label
+                        input(type='checkbox')
+                        |  Daten Teilen
+                .form-group
+                    button(type="button" class="btn btn-default") Speichern
+
+
+
+    script(src='javascripts/login.js')

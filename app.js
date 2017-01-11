@@ -43,6 +43,16 @@ module.exports.init = function (cb) {
 	var translator = require("./routes/translator");
 	app.use(translator);
 
+	//DEMO UI
+	app.get('/demo', function(req, res, next) {
+		res.render('index', { title: 'Demo' });
+
+	});
+	app.get('/profile', function(req, res, next) {
+		res.render('profile', { title: 'Demo' });
+
+	});
+
 	/**
 	 * swagger configuration
 	 */
