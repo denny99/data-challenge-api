@@ -38,7 +38,7 @@ exports.usersGET = function (args, res, next) {
             HttpUtil.sendResponse(res, err.code, err, res.req.accepts()[0], 'error');
         }
     });
-}
+};
 
 
 exports.usersIdDELETE = function (args, res, next) {
@@ -85,7 +85,7 @@ exports.usersIdPUT = function (args, res, next) {
 	 * user (User)
 	 **/
 
-	var path   = ParamUtil.buildPath([args.id.value, 'basic']);
+	var path   = ParamUtil.buildPath([args.id.value]);
 	var config = new HttpUtil.Configuration(HOST, PATH + path, 'get', PORT, true);
 
 	var existingUser, mergedUser;
