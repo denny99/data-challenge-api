@@ -26,31 +26,19 @@ var PATH = '/DataChallenge_1/LocalUserViewModel/users';
  * @param next
  */
 exports.usersGET = function (args, res, next) {
-	/**
-	 * parameters expected in the args:
-	 **/
-	var examples                 = {};
-	examples['application/json'] = [
-		{
-			"xingAccessToken"    : "aeiou",
-			"password"           : "aeiou",
-			"linkedInAccessToken": "aeiou",
-			"xingId"             : "aeiou",
-			"share"              : 1.3579000000000001069366817318950779736042022705078125,
-			"userId"             : "aeiou",
-			"username"           : "aeiou",
-			"linkedInId"         : "aeiou"
-		}
-	];
-	if (Object.keys(examples).length > 0) {
-		res.setHeader('Content-Type', 'application/json');
-		res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
-	}
-	else {
-		res.end();
-	}
-
-};
+    /**
+     * parameters expected in the args:
+     **/
+    var config = new HttpUtil.Configuration(Host, PATH, 'get', PORT, true);
+    HttpUtil.sendHttpRequest(config, false, function (response, err) {
+        if (!err) {
+            HttpUtil.sendResponse(res, 200, JSONXMLUtil.stringToJSON(response), res.req.accept()[0]);
+        }
+        else {
+            HttpUtil.sendResponse(res, err.code, err, res.req.accepts()[0], 'error');
+        }
+    });
+}
 
 
 exports.usersIdDELETE = function (args, res, next) {
