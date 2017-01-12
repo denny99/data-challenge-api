@@ -2,11 +2,11 @@ extends layout
 
 block content
     .container
-        .row
-            .col-xs-6
+        .row.vertical-center
+            .col-xs-4.col-xs-offset-4
                 h2 Login
         .row
-            .col-xs-6
+            .col-xs-4.col-xs-offset-4
                 .form-group
                     label(for='inputUsername') Email address
                     input#inputUsername.form-control(type='email', placeholder='Email')
