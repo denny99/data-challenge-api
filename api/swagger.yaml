@@ -19,6 +19,7 @@ paths:
       summary: "get basic user profiles"
       description: "get basic user profiles"
       operationId: "usersGET"
+      parameters: []
       responses:
         200:
           description: "Users found return results"
@@ -265,6 +266,26 @@ paths:
           description: "User not found / Network doesn't exist"
           schema:
             $ref: "#/definitions/Error"
+      x-swagger-router-controller: "SocialMedia"
+  /users/connect/{network}/callback:
+    get:
+      tags:
+      - "Social Media"
+      summary: "OAuth Callback"
+      description: "Internal callback route for oauth connect processes"
+      operationId: "usersConnectNetworkCallbackGET"
+      parameters:
+      - name: "network"
+        in: "path"
+        description: "network the user should be connected to"
+        required: true
+        type: "string"
+        enum:
+        - "xing"
+        - "linkedIn"
+      responses:
+        204:
+          description: "Callback received"
       x-swagger-router-controller: "SocialMedia"
   /users/{network}/{id}:
     get:

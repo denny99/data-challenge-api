@@ -85,7 +85,7 @@ function createSocialMediaUser(provider, id, accessToken, refreshTokenOrSecret, 
 	}
 
 	//save
-	UsersService.persistUser(user, function (user, err) {
+	UsersService.createUser(user, function (user, err) {
 		if (!err) {
 			done(user, true);
 		}

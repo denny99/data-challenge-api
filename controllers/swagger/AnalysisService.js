@@ -6,6 +6,9 @@ exports.usersNetworkIdAnalyzePOST = function (args, res, next) {
 	 * id (String)
 	 * network (String)
 	 **/
+
+		//TODO real db call
+
 	var examples                 = {};
 	examples['application/json'] = {
 		"jobTitle"     : "aeiou",
@@ -21,5 +24,5 @@ exports.usersNetworkIdAnalyzePOST = function (args, res, next) {
 		res.end();
 	}
 
-}
+};
 

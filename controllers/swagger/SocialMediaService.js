@@ -10,21 +10,9 @@ var OAuthUtil   = require("../../util/OAuthUtil.js");
 
 var Error = require('../../models/Error');
 
-var HOST       = process.env.vdb_host;
-var PORT       = process.env.vdb_port;
-var USERS_PATH = '/DataChallenge_1/LocalUserViewModel/users';
+var HOST = process.env.vdb_host;
+var PORT = process.env.vdb_port;
 var SOCIAL_PATH = '/DataChallenge_1/UsersUnionViewModel/users';
-
-global.passport.use('xing-connect', new XingStrategy({
-		consumerKey      : process.env.xing_app_id,
-		consumerSecret   : process.env.xing_app_key,
-		callbackURL      : 'http://localhost:9090/api/v1/users/authenticate/xing/callback',
-		passReqToCallback: true
-	},
-	function (req, token, tokenSecret, profile, done) {
-		connectUser(req, 'xing', profile.id, token, tokenSecret, done);
-	}
-));
 
 /**
  *
@@ -36,38 +24,51 @@ global.passport.use('xing-connect', new XingStrategy({
  * @param {function} done
  */
 function connectUser(req, provider, id, accessToken, refreshTokenOrSecret, done) {
-	if (req.isAuthenticated()) {
-		switch (provider) {
-			case 'xing':
-				req.user.xingId           = id;
-				req.user.xingAccessToken  = accessToken;
-				req.user.xingAccessSecret = refreshTokenOrSecret;
-				break;
-			case 'linkedIn':
-				req.user.linkedInAccessToken  = accessToken;
-				req.user.linkedInId           = id;
-				req.user.linkedInRefreshToken = refreshTokenOrSecret;
-				break;
+	UsersService.getUserById(req.session.userId, function (user, err) {
+		delete req.session.userId;
+		if (!err) {
+			switch (provider) {
+				case 'xing':
+					user.xingId           = id;
+					user.xingAccessToken  = accessToken;
+					user.xingAccessSecret = refreshTokenOrSecret;
+					break;
+				case 'linkedIn':
+					user.linkedInAccessToken  = accessToken;
+					user.linkedInId           = id;
+					user.linkedInRefreshToken = refreshTokenOrSecret;
+					break;
+			}
+			UsersService.updateUser(user, function (user, err) {
+				if (!err) {
+					done(user, true);
+				}
+				else {
+					done(err);
+				}
+			});
 		}
-		UsersService.persistUser(req.user, function (user, err) {
-			if (!err) {
-				done(user, true);
-			}
-			else {
-				done(err);
-			}
-		})
-	}
-	else {
-		done(new Error(403, "login required"))
-	}
+		else {
+			done(err);
+		}
+	});
 }
 
+global.passport.use('xing-connect', new XingStrategy({
+		consumerKey      : process.env.xing_app_id,
+		consumerSecret   : process.env.xing_app_key,
+		callbackURL      : 'http://localhost:9090/api/v1/users/connect/xing/callback',
+		passReqToCallback: true
+	},
+	function (req, token, tokenSecret, profile, done) {
+		connectUser(req, 'xing', profile.id, token, tokenSecret, done);
+	}
+));
 
 global.passport.use('linkedIn-connect', new LinkedInStrategy({
 	clientID         : process.env.linkedIn_app_id,
 	clientSecret     : process.env.linkedIn_app_key,
-	callbackURL      : "http://localhost:9090/api/v1/users/authenticate/linkedIn/callback",
+	callbackURL      : "http://localhost:9090/api/v1/users/connect/linkedIn/callback",
 	scope            : ['r_basicprofile'],
 	state            : true,
 	passReqToCallback: true
@@ -85,13 +86,7 @@ exports.usersIdConnectNetworkDELETE = function (args, res, next) {
 	 * id (String)
 	 * network (String)
 	 **/
-	var path   = ParamUtil.buildPath([args.id.value]);
-	var config = new HttpUtil.Configuration(HOST, USERS_PATH + path, 'get', PORT, true);
-
-	var existingUser;
-
-	HttpUtil.sendHttpRequest(config, false, function (response, err) {
-			existingUser = JSONXMLUtil.stringToJSON(response);
+	UsersService.getUserById(args.id.value, function (existingUser, err) {
 			if (!err) {
 				switch (args.network.value) {
 					case 'xing':
@@ -106,7 +101,7 @@ exports.usersIdConnectNetworkDELETE = function (args, res, next) {
 						break;
 				}
 			}
-			UsersService.persistUser(existingUser, function (existingUser, err) {
+		UsersService.createUser(existingUser, function (existingUser, err) {
 				if (!err) {
 					HttpUtil.sendResponse(res, 200, existingUser, res.req.accept()[0]);
 				}
@@ -118,10 +113,37 @@ exports.usersIdConnectNetworkDELETE = function (args, res, next) {
 	);
 };
 
+exports.usersConnectNetworkCallbackGET = function (args, req, res, next) {
+	/**
+	 * OAuth Callback
+	 * Internal callback route for oauth connect processes
+	 *
+	 * network String network the user should be connected to
+	 * no response value expected for this operation
+	 **/
+	switch (args.network.value) {
+		case "linkedIn":
+			return linkedIn(req, res, next);
+			break;
+		case "xing":
+			return xing(req, res, next);
+	}
+};
 
-exports.usersIdConnectNetworkGET = function (args, res, next) {
-
-
+exports.usersIdConnectNetworkGET = function (args, req, res, next) {
+	/**
+	 * parameters expected in the args:
+	 * id (String)
+	 * network (String)
+	 **/
+	req.session.userId = args.id.value;
+	switch (args.network.value) {
+		case "linkedIn":
+			return linkedIn(req, res, next);
+		case "xing":
+			return xing(req, res, next);
+	}
+	return null;
 };
 
 exports.usersNetworkIdGET = function (args, req, res, next) {
@@ -163,6 +185,7 @@ exports.usersSearchGET = function (args, res, next) {
 	 * parameters expected in the args:
 	 * keywords (String)
 	 **/
+		//TODO real db call
 	var examples                 = {};
 	examples['application/json'] = [
 		{
@@ -189,5 +212,5 @@ exports.usersSearchGET = function (args, res, next) {
 		res.end();
 	}
 
-}
+};
 
