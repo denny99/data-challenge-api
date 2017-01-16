@@ -1,7 +1,7 @@
 'use strict';
-var ParamUtil        = require('../../util/ParamUtil.js');
-var HttpUtil         = require('../../util/HttpUtil.js');
-var JSONXMLUtil      = require('../../util/JSONXMLUtil.js');
+var ParamUtil   = require('../../util/ParamUtil.js');
+var HttpUtil    = require('../../util/HttpUtil.js');
+var JSONXMLUtil = require('../../util/JSONXMLUtil.js');
 
 var BasicStrategy    = require('passport-http').BasicStrategy;
 var XingStrategy     = require('passport-xing').Strategy;
