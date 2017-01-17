@@ -56,7 +56,7 @@ module.exports.init = function (cb) {
 
 	});
 	app.get('/profile', function(req, res, next) {
-		res.render('profile', { title: 'Demo' });
+		res.render('profile', { title: 'Demo', user: req.user });
 
 	});
 

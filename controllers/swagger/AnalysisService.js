@@ -5,6 +5,9 @@ var AuthenticationService         = require('./AuthenticationService');
 var ParamUtil          = require('../../util/ParamUtil');
 var HttpUtil           = require('../../util/HttpUtil');
 var JSONXMLUtil        = require("../../util/JSONXMLUtil.js");
+var TranslateUtil        = require("../../util/TranslateUtil.js");
+
+TranslateUtil.translator("brennen");
 
 var Error = require('../../models/Error');
 
@@ -18,9 +21,6 @@ exports.usersNetworkIdAnalyzePOST = function (args, req, res, next) {
 	 * id (String)
 	 * network (String)
 	 **/
-
-	//TODO real db call
-
 
 	SocialMediaService.getSocialUserById(args.network.value, args.id.value, req.user, function (re, err) {
 		var socialUser = JSONXMLUtil.stringToJSON(re);

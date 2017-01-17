@@ -8,6 +8,10 @@ block content
         .row
             .col-xs-4.col-xs-offset-4
                 .form-group
+                    a(href="/api/v1/users/authenticate/linkedIn" type="button" class="btn btn-primary") LinkedIn
+                .form-group
+                    a(href="/api/v1/users/authenticate/xing" type="button" class="btn btn-success") Xing
+                .form-group
                     label(for='inputUsername') Email address
                     input#inputUsername.form-control(type='email', placeholder='Email')
                 .form-group

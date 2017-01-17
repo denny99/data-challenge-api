@@ -9,17 +9,18 @@ block content
                 h2 profile
         .row
             .col-xs-4.col-xs-offset-4
+                input#userIdInput(type="hidden") #{user.userId}
                 .form-group
-                    a(href="/api/v1/users/authenticate/linkedIn" type="button" class="btn btn-primary") LinkedIn
+                    a(href="/api/v1/users/#{user.userId}/connect/linkedIn" type="button" class="btn btn-primary") LinkedIn
                 .form-group
-                    a(href="/api/v1/users/authenticate/xing" type="button" class="btn btn-success") Xing
+                    a(href="/api/v1/users/#{user.userId}/connect/xing" type="button" class="btn btn-success") Xing
                 .checkbox
                     label
-                        input(type='checkbox')
+                        input#shareCb(type='checkbox')
                         |  Daten Teilen
                 .form-group
-                    button(type="button" class="btn btn-default") Speichern
+                    button#saveButton(type="button" class="btn btn-default") Speichern
 
 
 
-    script(src='javascripts/login.js')
+    script(src='javascripts/profile.js')
