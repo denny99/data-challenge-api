@@ -8,16 +8,16 @@
  * @return {string}
  */
 module.exports.buildQuery = function (keyValueMap) {
-	var result = "?";
+	var result = '?';
 
 	var keys = Object.keys(keyValueMap);
 
 	keys.forEach(function (key, index) {
-		result += key + "=" + encodeURI(keyValueMap[key]).replace("&", "%26");
+		result += key + '=' + encodeURI(keyValueMap[key]).replace('&', '%26');
 
 		//add & for all elements except last one
 		if (index < keys.length - 1) {
-			result += "&";
+			result += '&';
 		}
 	});
 
@@ -30,14 +30,14 @@ module.exports.buildQuery = function (keyValueMap) {
  * @return {string}
  */
 module.exports.buildPath = function (values) {
-	var result = "/";
+	var result = '/';
 
 	values.forEach(function (value, index) {
-		result += encodeURI(value).replace("&", "%26");
+		result += encodeURI(value).replace('&', '%26').replace('/', '%2F').replace(':', '%3A');
 
 		//add / for all elements except last one
 		if (index < values.length - 1) {
-			result += "/";
+			result += '/';
 		}
 	});
 
