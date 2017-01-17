@@ -23,7 +23,7 @@ var BASIC_PATH = '/DataChallenge_1/LocalUserViewModel/users';
  * @param {string} [refreshTokenOrSecret]
  * @param {function} done
  */
-function findUser(username, password, provider, accessToken, refreshTokenOrSecret, done) {
+exports.findUser = function (username, password, provider, accessToken, refreshTokenOrSecret, done) {
 	var path   = ParamUtil.buildPath([username, provider]);
 	var config = new HttpUtil.Configuration(HOST, BASIC_PATH + path, 'get', PORT, true);
 
@@ -97,7 +97,7 @@ function createSocialMediaUser(provider, id, accessToken, refreshTokenOrSecret, 
 
 global.passport.use('basic', new BasicStrategy(
 	function (username, password, done) {
-		findUser(username, password, 'basic', undefined, undefined, done);
+		exports.findUser(username, password, 'basic', undefined, undefined, done);
 	}
 ));
 
@@ -107,7 +107,7 @@ global.passport.use('xing-login', new XingStrategy({
 		callbackURL   : 'http://localhost:9090/api/v1/users/authenticate/xing/callback'
 	},
 	function (token, tokenSecret, profile, done) {
-		findUser(profile.id, undefined, 'xing', token, tokenSecret, done);
+		exports.findUser(profile.id, undefined, 'xing', token, tokenSecret, done);
 	}
 ));
 
@@ -118,7 +118,7 @@ global.passport.use('linkedIn-login', new LinkedInStrategy({
 	scope       : ['r_basicprofile'],
 	state       : true
 }, function (accessToken, refreshToken, profile, done) {
-	findUser(profile.id, undefined, 'linkedIn', accessToken, refreshToken, done);
+	exports.findUser(profile.id, undefined, 'linkedIn', accessToken, refreshToken, done);
 }));
 
 var basic    = global.passport.authenticate('basic', {session: true});

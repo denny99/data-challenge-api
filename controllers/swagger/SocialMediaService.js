@@ -146,30 +146,34 @@ exports.usersIdConnectNetworkGET = function (args, req, res, next) {
 	return null;
 };
 
+exports.getSocialUserById = function (network, id, user, cb) {
+	var params = [network];
+	switch (network) {
+		case 'linkedIn':
+			params.push(user.linkedInAccessToken);
+			break;
+		case 'xing':
+			var request_data = {
+				url   : "https://api.xing.com/v1/users/" + id,
+				method: 'get'
+			};
+			params.push(id, user.xingAccessToken);
+			params = OAuthUtil.createXingOAuthParams(user, request_data, params);
+
+	}
+	var path   = ParamUtil.buildPath(params);
+	var config = new HttpUtil.Configuration(HOST, SOCIAL_PATH + path, 'get', PORT, true);
+
+	HttpUtil.sendHttpRequest(config, false, cb);
+};
+
 exports.usersNetworkIdGET = function (args, req, res, next) {
 	/**
 	 * parameters expected in the args:
 	 * id (String)
 	 * network (String)
 	 **/
-	var params = [args.network.value];
-	switch (args.network.value) {
-		case 'linkedIn':
-			params.push(req.user.linkedInAccessToken);
-			break;
-		case 'xing':
-			var request_data = {
-				url   : "https://api.xing.com/v1/users/" + args.id.value,
-				method: 'get'
-			};
-			params.push(args.id.value, req.user.xingAccessToken);
-			params = OAuthUtil.createXingOAuthParams(req.user, request_data, params);
-
-	}
-	var path   = ParamUtil.buildPath(params);
-	var config = new HttpUtil.Configuration(HOST, SOCIAL_PATH + path, 'get', PORT, true);
-
-	HttpUtil.sendHttpRequest(config, false, function (response, err) {
+	exports.getSocialUserById(args.network.value,args.id.value, req.user, function (response, err) {
 		if (!err) {
 			HttpUtil.sendResponse(res, 200, JSONXMLUtil.stringToJSON(response), res.req.accepts()[0], 'user');
 		}
@@ -180,37 +184,31 @@ exports.usersNetworkIdGET = function (args, req, res, next) {
 }
 ;
 
-exports.usersSearchGET = function (args, res, next) {
+exports.usersSearchGET = function (args, req, res, next) {
 	/**
 	 * parameters expected in the args:
 	 * keywords (String)
 	 **/
-		//TODO real db call
-	var examples                 = {};
-	examples['application/json'] = [
-		{
-			"gender"           : true,
-			"last_name"        : "aeiou",
-			"employment_status": "aeiou",
-			"id"               : "aeiou",
-			"employment"       : {
-				"end_date"   : "aeiou",
-				"begin_date" : "aeiou",
-				"name"       : "aeiou",
-				"description": "aeiou",
-				"industry"   : "aeiou",
-				"title"      : "aeiou"
-			},
-			"first_name"       : "aeiou"
-		}
-	];
-	if (Object.keys(examples).length > 0) {
-		res.setHeader('Content-Type', 'application/json');
-		res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
-	}
-	else {
-		res.end();
-	}
+	var params = [];
+	var request_data = {
+		url   : "https://api.xing.com/v1/users/find",
+		method: 'get'
+	};
 
+	params.push(req.user.xingAccessToken);
+	params = OAuthUtil.createXingOAuthParams(req.user, request_data, params);
+	params.push('first_name,last_name,employment_status,gender,professional_experience', args.keywords.value);
+
+	var path = ParamUtil.buildPath(params);
+	var config = new HttpUtil.Configuration(HOST, SOCIAL_PATH + path, 'get', PORT,true);
+
+	HttpUtil.sendHttpRequest(config, false, function (response, err) {
+		if (!err) {
+			HttpUtil.sendResponse(res, 200, JSONXMLUtil.stringToJSON(response), res.req.accepts()[0], 'users');
+		}
+		else {
+			HttpUtil.sendResponse(res, err.code, err, res.req.accepts()[0], 'error');
+		}
+	});
 };
 
