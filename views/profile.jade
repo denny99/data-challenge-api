@@ -4,18 +4,15 @@ extends layout
 
 block content
     .container
-        .row.vertical-center
-            .col-xs-4.col-xs-offset-4
-                h2 Profile
-        .row
-            .col-xs-4.col-xs-offset-4
-                input#userIdInput(type="hidden" value="#{user.userId}")
-                if !user.linkedInId
-                    .form-group
-                        a.btn.btn-primary.btn-block(href="/api/v1/users/#{user.userId}/connect/linkedIn" type="button") Connect with LinkedIn
-                if !user.xingId
-                    .form-group
-                        a.btn.btn-success.btn-block(href="/api/v1/users/#{user.userId}/connect/xing" type="button") Connect with Xing
+        .row.form-group
+            .col-xs-4
+                h2 Einstellungen
+            .col-xs-4
+                h2 Soziale Netzwerke
+            .col-xs-4
+                h2 Abschätzungen
+        .row.form-group
+            .col-xs-4
                 .checkbox
                     label
                         if user.share == '1'
@@ -26,7 +23,24 @@ block content
                             |  Daten Teilen
                 .form-group
                     button#saveButton.pull-right(type="button" class="btn btn-default") Speichern
+            .col-xs-4
+                input#userIdInput(type="hidden" value="#{user.userId}")
+                input#xingIdInput(type="hidden" value="#{user.xingId}")
+                input#linkedInIdInput(type="hidden" value="#{user.linkedInId}")
+                if !user.linkedInId
+                    .form-group
+                        a.btn.btn-primary.btn-block(href="/api/v1/users/#{user.userId}/connect/linkedIn") Mit LinkedIn verbinden
+                if !user.xingId
+                    .form-group
+                        a.btn.btn-success.btn-block(href="/api/v1/users/#{user.userId}/connect/xing") Mit Xing verbinden
+            .col-xs-4
+                if user.linkedInId
+                    .form-group
+                        button.btn.btn-primary.btn-block#estimateLinkedIn(type="button") Abschätzung von LinkedIn
+                if user.xingId
+                    .form-group
+                        button.btn.btn-success.btn-block#estimateXing(type="button") Abschätzung von Xing
 
-
+    include estimateModal
 
     script(src='javascripts/profile.js')

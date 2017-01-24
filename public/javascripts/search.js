@@ -6,6 +6,7 @@ function sortNumber(a, b) {
 }
 
 var estimateModal  = $('#estimateModal');
+var titleTd = $('#title');
 var minSalaryTd    = $('#minSalary');
 var maxSalaryTd    = $('#maxSalary');
 var medianSalaryTd = $('#medianSalary');
@@ -74,6 +75,7 @@ $('#searchButton').click(function () {
 						var salaryMedian = [result[0].salaryMedian, result[1].salaryMedian];
 						salaryMedian.sort(sortNumber);
 
+						titleTd.html(result[0].jobTitle);
 						minSalaryTd.html(salaryMin[0] + '-' + salaryMin[1]);
 						maxSalaryTd.html(salaryMax[0] + '-' + salaryMax[1]);
 						medianSalaryTd.html(salaryMedian[0] + '-' + salaryMedian[1]);
