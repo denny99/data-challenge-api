@@ -3,11 +3,11 @@
  */
 $('#saveButton').click(function () {
     $.ajax({
-        url: "/api/v1/users",
+        url: "/api/v1/users/" + $('#userIdInput').val(),
         method: 'put',
         data: {
-            userId: $('#userIdInput').value,
-            share: $('#shareCb').value
+            userId: $('#userIdInput').val(),
+            share: $('#shareCb').val(),
         },
         success: function( result ) {
             window.location = '/profile';

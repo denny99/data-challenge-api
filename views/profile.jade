@@ -9,7 +9,7 @@ block content
                 h2 profile
         .row
             .col-xs-4.col-xs-offset-4
-                input#userIdInput(type="hidden") #{user.userId}
+                input#userIdInput(type="hidden" value="#{user.userId}")
                 .form-group
                     a(href="/api/v1/users/#{user.userId}/connect/linkedIn" type="button" class="btn btn-primary") LinkedIn
                 .form-group

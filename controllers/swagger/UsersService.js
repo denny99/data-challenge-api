@@ -166,7 +166,7 @@ exports.usersIdPUT = function (args, res, next) {
 		if (!err) {
 			//merge old and new values
 
-			if (existingUser.password !== args.user.value.passwordRepeat) {
+			if (req.user.password && existingUser.password !== args.user.value.passwordRepeat) {
 				return HttpUtil.sendResponse(res, 403, undefined, res.req.accepts()[0], 'error');
 			}
 
