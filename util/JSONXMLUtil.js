@@ -13,11 +13,18 @@ var converter = new X2JS({
  */
 module.exports.stringToJSON = function (string) {
 	var result = converter.xml2js(string);
-	var keys   = Object.keys(result);
-	//keys.length == 1, xml has only one root element
-	//cut off root element
-	return result[keys[0]];
+	return simplifyJSON(result);
 };
+
+function simplifyJSON(json) {
+	var keys = Object.keys(json);
+	if (keys.length !== 1) {
+		return json;
+	}
+	else {
+		return simplifyJSON(json[keys[0]]);
+	}
+}
 
 /**
  *

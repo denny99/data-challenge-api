@@ -19,6 +19,7 @@ paths:
       summary: "get basic user profiles"
       description: "get basic user profiles"
       operationId: "usersGET"
+      parameters: []
       responses:
         200:
           description: "Users found return results"
@@ -226,6 +227,9 @@ paths:
         description: "network name (xing, linkedIn) to join user"
         required: true
         type: "string"
+        enum:
+        - "xing"
+        - "linkedIn"
       responses:
         200:
           description: "Returns authorization page of network"
@@ -263,6 +267,26 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "SocialMedia"
+  /users/connect/{network}/callback:
+    get:
+      tags:
+      - "Social Media"
+      summary: "OAuth Callback"
+      description: "Internal callback route for oauth connect processes"
+      operationId: "usersConnectNetworkCallbackGET"
+      parameters:
+      - name: "network"
+        in: "path"
+        description: "network the user should be connected to"
+        required: true
+        type: "string"
+        enum:
+        - "xing"
+        - "linkedIn"
+      responses:
+        204:
+          description: "Callback received"
+      x-swagger-router-controller: "SocialMedia"
   /users/{network}/{id}:
     get:
       tags:
@@ -281,6 +305,9 @@ paths:
         description: "network name (xing, linkedIn) of user"
         required: true
         type: "string"
+        enum:
+        - "xing"
+        - "linkedIn"
       responses:
         200:
           description: "Returns found social media profile"
@@ -292,12 +319,12 @@ paths:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "SocialMedia"
   /users/{network}/{id}/analyze:
-    post:
+    get:
       tags:
       - "Analysis"
       summary: "perform salary analysis for social media profile"
       description: "perform salary analysis for social media profile"
-      operationId: "usersNetworkIdAnalyzePOST"
+      operationId: "usersNetworkIdAnalyzeGET"
       parameters:
       - name: "id"
         in: "path"
@@ -309,6 +336,9 @@ paths:
         description: "network name (xing, linkedIn) of user"
         required: true
         type: "string"
+        enum:
+        - "xing"
+        - "linkedIn"
       responses:
         200:
           description: "Returns salary estimation"

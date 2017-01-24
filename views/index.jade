@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    .container
+        .row.vertical-center
+            .col-xs-4.col-xs-offset-4
+                h2 Login
+        .row
+            .col-xs-4.col-xs-offset-4
+                .form-group
+                    a(href="/api/v1/users/authenticate/linkedIn" type="button" class="btn btn-primary") LinkedIn
+                .form-group
+                    a(href="/api/v1/users/authenticate/xing" type="button" class="btn btn-success") Xing
+                .form-group
+                    label(for='inputUsername') Email address
+                    input#inputUsername.form-control(type='email', placeholder='Email')
+                .form-group
+                    label(for='inputPassword') Password
+                    input#inputPassword.form-control(type='password', placeholder='Password')
+                .form-group
+                    input.btn.btn-primary#loginButton(type='button', name='login', value='Login')
+
+
+    script(src='javascripts/login.js')

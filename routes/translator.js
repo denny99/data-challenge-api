@@ -7,9 +7,11 @@ var router  = express.Router();
 var MASTER_ROUTE = "/translator";
 
 Xing      = require('./../controllers/XingService');
+LinkedIn = require('./../controllers/LinkedInService');
 Glassdoor = require('./../controllers/GlassdoorService');
 Adzuna    = require('./../controllers/AdzunaService');
 
+router.use(MASTER_ROUTE + "/linkedIn/getMe", LinkedIn.getMe);
 router.use(MASTER_ROUTE + "/xing/getById", Xing.getById);
 router.use(MASTER_ROUTE + "/xing/find", Xing.find);
 router.use(MASTER_ROUTE + "/adzuna/search", Adzuna.search);

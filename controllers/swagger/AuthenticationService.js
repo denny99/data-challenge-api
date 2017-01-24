@@ -1,7 +1,7 @@
 'use strict';
-var ParamUtil        = require('../../util/ParamUtil.js');
-var HttpUtil         = require('../../util/HttpUtil.js');
-var JSONXMLUtil      = require('../../util/JSONXMLUtil.js');
+var ParamUtil   = require('../../util/ParamUtil.js');
+var HttpUtil    = require('../../util/HttpUtil.js');
+var JSONXMLUtil = require('../../util/JSONXMLUtil.js');
 
 var BasicStrategy    = require('passport-http').BasicStrategy;
 var XingStrategy     = require('passport-xing').Strategy;
@@ -9,10 +9,6 @@ var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 
 var User         = require('../../models/User');
 var UsersService = require('./UsersService');
-
-var HOST       = process.env.vdb_host;
-var PORT       = process.env.vdb_port;
-var BASIC_PATH = '/DataChallenge_1/LocalUserViewModel/users';
 
 /**
  *
@@ -24,13 +20,8 @@ var BASIC_PATH = '/DataChallenge_1/LocalUserViewModel/users';
  * @param {function} done
  */
 function findUser(username, password, provider, accessToken, refreshTokenOrSecret, done) {
-	var path   = ParamUtil.buildPath([username, provider]);
-	var config = new HttpUtil.Configuration(HOST, BASIC_PATH + path, 'get', PORT, true);
-
-	HttpUtil.sendHttpRequest(config, false, function (response, err) {
-		var user;
+	UsersService.findUser(username, password, provider, accessToken, refreshTokenOrSecret, function (user, err) {
 		if (!err) {
-			user = JSONXMLUtil.stringToJSON(response);
 			if (!user) {
 				return done(null, false);
 			}
@@ -85,7 +76,7 @@ function createSocialMediaUser(provider, id, accessToken, refreshTokenOrSecret, 
 	}
 
 	//save
-	UsersService.persistUser(user, function (user, err) {
+	UsersService.createUser(user, function (user, err) {
 		if (!err) {
 			done(user, true);
 		}

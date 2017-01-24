@@ -13,11 +13,92 @@ var PORT = process.env.vdb_port;
 var PATH = '/DataChallenge_1/LocalUserViewModel/users';
 
 /**
- * @callback persistUserCb
+ * @callback userCb
  * @param {User} [user]
  * @param {Error} [err]
  */
 
+/**
+ *
+ * @param {string} username
+ * @param {string} [password]
+ * @param {string} provider
+ * @param {string} [accessToken]
+ * @param {string} [refreshTokenOrSecret]
+ * @param {userCb} cb
+ */
+exports.findUser = function (username, password, provider, accessToken, refreshTokenOrSecret, cb) {
+	var path   = ParamUtil.buildPath([username, provider]);
+	var config = new HttpUtil.Configuration(HOST, PATH + path, 'get', PORT, true);
+
+	HttpUtil.sendHttpRequest(config, false, function (response, err) {
+		var user;
+		if (!err) {
+			user = JSONXMLUtil.stringToJSON(response);
+			cb(user);
+		}
+		else {
+			return cb(undefined, err);
+		}
+	});
+};
+
+/**
+ *
+ * @param {string} id
+ * @param {userCb} cb
+ */
+exports.getUserById = function (id, cb) {
+	var path   = ParamUtil.buildPath([id]);
+	var config = new HttpUtil.Configuration(HOST, PATH + path, 'get', PORT, true);
+
+	HttpUtil.sendHttpRequest(config, false, function (response, err) {
+		cb(JSONXMLUtil.stringToJSON(response), err);
+	});
+};
+
+
+/**
+ *
+ * @param {User} user
+ * @param {userCb} cb
+ */
+exports.createUser = function (user, cb) {
+	var path   = ParamUtil.buildPath([user.userId]);
+	var config = new HttpUtil.Configuration(HOST, PATH + path, 'post', PORT, true);
+	HttpUtil.sendHttpRequest(config, false, function (response, err) {
+		if (!err) {
+			exports.updateUser(user, cb);
+		}
+		else {
+			cb(undefined, err);
+		}
+	});
+};
+
+/**
+ *
+ * @param {User} user
+ * @param {userCb} cb
+ */
+exports.updateUser = function (user, cb) {
+	var userList  = [
+		user.userId, user.share, user.username || 'NULL', user.password || 'NULL', user.xingId || 'NULL',
+		user.xingAccessToken || 'NULL', user.xingAccessSecret || 'NULL', user.linkedInId || 'NULL',
+		user.linkedInAccessToken || 'NULL',
+		user.linkedInRefreshToken || 'NULL'
+	];
+	var path      = ParamUtil.buildPath(userList);
+	var newConfig = new HttpUtil.Configuration(HOST, PATH + path, 'put', PORT, true);
+	HttpUtil.sendHttpRequest(newConfig, false, function (response, err) {
+		if (!err) {
+			cb(JSONXMLUtil.stringToJSON(response));
+		}
+		else {
+			cb(undefined, err);
+		}
+	});
+};
 
 /**
  *
@@ -29,27 +110,15 @@ exports.usersGET = function (args, res, next) {
 	/**
 	 * parameters expected in the args:
 	 **/
-	var examples                 = {};
-	examples['application/json'] = [
-		{
-			"xingAccessToken"    : "aeiou",
-			"password"           : "aeiou",
-			"linkedInAccessToken": "aeiou",
-			"xingId"             : "aeiou",
-			"share"              : 1.3579000000000001069366817318950779736042022705078125,
-			"userId"             : "aeiou",
-			"username"           : "aeiou",
-			"linkedInId"         : "aeiou"
+	var config = new HttpUtil.Configuration(Host, PATH, 'get', PORT, true);
+	HttpUtil.sendHttpRequest(config, false, function (response, err) {
+		if (!err) {
+			HttpUtil.sendResponse(res, 200, JSONXMLUtil.stringToJSON(response), res.req.accept()[0]);
 		}
-	];
-	if (Object.keys(examples).length > 0) {
-		res.setHeader('Content-Type', 'application/json');
-		res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
-	}
-	else {
-		res.end();
-	}
-
+		else {
+			HttpUtil.sendResponse(res, err.code, err, res.req.accepts()[0], 'error');
+		}
+	});
 };
 
 
@@ -76,13 +145,9 @@ exports.usersIdGET = function (args, res, next) {
 	 * parameters expected in the args:
 	 * id (String)
 	 **/
-
-	var path   = ParamUtil.buildPath([args.id.value]);
-	var config = new HttpUtil.Configuration(HOST, PATH + path, 'get', PORT, true);
-
-	HttpUtil.sendHttpRequest(config, false, function (response, err) {
+	exports.getUserById(args.id.value, function (user, err) {
 		if (!err) {
-			HttpUtil.sendResponse(res, 200, JSONXMLUtil.stringToJSON(response), res.req.accepts()[0], 'user');
+			HttpUtil.sendResponse(res, 200, user, res.req.accepts()[0], 'user');
 		}
 		else {
 			HttpUtil.sendResponse(res, err.code, err, res.req.accepts()[0], 'error');
@@ -97,27 +162,18 @@ exports.usersIdPUT = function (args, res, next) {
 	 * user (User)
 	 **/
 
-	var path   = ParamUtil.buildPath([args.id.value, 'basic']);
-	var config = new HttpUtil.Configuration(HOST, PATH + path, 'get', PORT, true);
-
-	var existingUser, mergedUser;
-
-	//first get existing user
-	HttpUtil.sendHttpRequest(config, false, function (response, err) {
+	exports.getUserById(args.id.value, function (existingUser, err) {
 		if (!err) {
-
 			//merge old and new values
-			existingUser = JSONXMLUtil.stringToJSON(response);
 
-			if (existingUser.password !== args.user.value.passwordRepeat) {
+			if (args.user.value.password && existingUser.password !== args.user.value.passwordRepeat) {
 				return HttpUtil.sendResponse(res, 403, undefined, res.req.accepts()[0], 'error');
 			}
 
-			mergedUser        = new User();
-			mergedUser.userId = existingUser.userId;
+			var mergedUser = existingUser;
 
 			//refresh with new data
-			_.assignInWith(mergedUser, existingUser, args.user.value, function (objValue, srcValue, key) {
+			_.assignInWith(existingUser, args.user.value, function (objValue, srcValue, key) {
 				//
 				if (key === 'userId' || key === 'xingId' || key === 'xingAccessToken' || key === 'xingAccessSecret' ||
 					key === 'linkedInId' ||
@@ -128,18 +184,9 @@ exports.usersIdPUT = function (args, res, next) {
 					return srcValue;
 				}
 			});
-			var userList = [
-				mergedUser.userId, mergedUser.share, mergedUser.username, mergedUser.password,
-				mergedUser.xingId, mergedUser.xingAccessToken, mergedUser.xingAccessSecret, mergedUser.linkedInId,
-				mergedUser.linkedInAccessToken, mergedUser.linkedInRefreshToken
-			];
-
-			//update user in db
-			var pathUser   = ParamUtil.buildPath(userList);
-			var configUser = new HttpUtil.Configuration(HOST, PATH + pathUser, 'put', PORT, true);
-			HttpUtil.sendHttpRequest(configUser, false, function (response, err) {
+			exports.updateUser(mergedUser, function (user, err) {
 				if (!err) {
-					HttpUtil.sendResponse(res, 200, JSONXMLUtil.stringToJSON(response), res.req.accepts()[0], 'user');
+					HttpUtil.sendResponse(res, 200, user, res.req.accepts()[0], 'user');
 				}
 				else {
 					HttpUtil.sendResponse(res, err.code, err, res.req.accepts()[0], 'error');
@@ -153,39 +200,6 @@ exports.usersIdPUT = function (args, res, next) {
 
 };
 
-/**
- *
- * @param {User} user
- * @param {persistUserCb} cb
- */
-exports.persistUser = function (user, cb) {
-	var path   = ParamUtil.buildPath([user.userId]);
-	var config = new HttpUtil.Configuration(HOST, PATH + path, 'post', PORT, true);
-	HttpUtil.sendHttpRequest(config, false, function (response, err) {
-		if (!err) {
-			var userList  = [
-				user.userId, user.share, user.username, user.password, user.xingId,
-				user.xingAccessToken, user.xingAccessSecret, user.linkedInId, user.linkedInAccessToken,
-				user.linkedInRefreshToken
-			];
-			path          = ParamUtil.buildPath(userList);
-			var newConfig = new HttpUtil.Configuration(HOST, PATH + path, 'put', PORT, true);
-			HttpUtil.sendHttpRequest(newConfig, false, function (response, err) {
-				if (!err) {
-					cb(JSONXMLUtil.stringToJSON(response));
-				}
-				else {
-					cb(undefined, err);
-				}
-			})
-
-		}
-		else {
-			cb(undefined, err);
-		}
-	});
-};
-
 exports.usersPOST = function (args, res, next) {
 	/**
 	 * parameters expected in the args:
@@ -193,7 +207,7 @@ exports.usersPOST = function (args, res, next) {
 	 **/
 	var user = new User(args.user.value.share, args.user.value.username, args.user.value.password);
 
-	exports.persistUser(user, function (user, err) {
+	exports.createUser(user, function (user, err) {
 		if (!err) {
 			HttpUtil.sendResponse(res, 200, user, res.req.accepts()[0], 'user');
 		}
