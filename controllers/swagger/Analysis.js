@@ -1,11 +1,10 @@
 'use strict';
-
-var url = require('url');
-
-
 var Analysis = require('./AnalysisService');
+var AuthUtil = require('../../util/AuthUtil');
 
 
-module.exports.usersNetworkIdAnalyzePOST = function usersNetworkIdAnalyzePOST(req, res, next) {
-	Analysis.usersNetworkIdAnalyzePOST(req.swagger.params, req, res, next);
+module.exports.usersNetworkIdAnalyzeGET = function usersNetworkIdAnalyzePOST(req, res, next) {
+	AuthUtil.isAuthenticated(req, res, function () {
+		Analysis.usersNetworkIdAnalyzeGET(req.swagger.params, req, res, next);
+	});
 };

@@ -173,7 +173,7 @@ exports.usersNetworkIdGET = function (args, req, res, next) {
 	 * id (String)
 	 * network (String)
 	 **/
-	exports.getSocialUserById(args.network.value,args.id.value, req.user, function (response, err) {
+	exports.getSocialUserById(args.network.value, args.id.value, req.user, function (response, err) {
 		if (!err) {
 			HttpUtil.sendResponse(res, 200, JSONXMLUtil.stringToJSON(response), res.req.accepts()[0], 'user');
 		}
@@ -199,8 +199,8 @@ exports.usersSearchGET = function (args, req, res, next) {
 	params = OAuthUtil.createXingOAuthParams(req.user, request_data, params);
 	params.push('first_name,last_name,employment_status,gender,professional_experience', args.keywords.value);
 
-	var path = ParamUtil.buildPath(params);
-	var config = new HttpUtil.Configuration(HOST, SOCIAL_PATH + path, 'get', PORT,true);
+	var path         = ParamUtil.buildPath(params);
+	var config       = new HttpUtil.Configuration(HOST, SOCIAL_PATH + path, 'get', PORT, true);
 
 	HttpUtil.sendHttpRequest(config, false, function (response, err) {
 		if (!err) {

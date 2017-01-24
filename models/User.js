@@ -6,7 +6,7 @@ var _ = require('lodash');
 
 /**
  * @class User
- * @property {number} share
+ * @property {string} share
  * @property {string} username
  * @property {string} password
  * @property {string} xingId
@@ -16,7 +16,7 @@ var _ = require('lodash');
  * @property {string} linkedInAccessToken
  * @property {string} linkedInRefreshToken
  *
- * @param {number} [share]
+ * @param {string} [share]
  * @param {string} [username]
  * @param {string} [password]
  * @param {string} [xingId]

@@ -18,6 +18,30 @@ var PATH = '/DataChallenge_1/LocalUserViewModel/users';
  * @param {Error} [err]
  */
 
+/**
+ *
+ * @param {string} username
+ * @param {string} [password]
+ * @param {string} provider
+ * @param {string} [accessToken]
+ * @param {string} [refreshTokenOrSecret]
+ * @param {userCb} cb
+ */
+exports.findUser = function (username, password, provider, accessToken, refreshTokenOrSecret, cb) {
+	var path   = ParamUtil.buildPath([username, provider]);
+	var config = new HttpUtil.Configuration(HOST, PATH + path, 'get', PORT, true);
+
+	HttpUtil.sendHttpRequest(config, false, function (response, err) {
+		var user;
+		if (!err) {
+			user = JSONXMLUtil.stringToJSON(response);
+			cb(user);
+		}
+		else {
+			return cb(undefined, err);
+		}
+	});
+};
 
 /**
  *

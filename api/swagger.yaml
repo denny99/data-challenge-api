@@ -319,12 +319,12 @@ paths:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "SocialMedia"
   /users/{network}/{id}/analyze:
-    post:
+    get:
       tags:
       - "Analysis"
       summary: "perform salary analysis for social media profile"
       description: "perform salary analysis for social media profile"
-      operationId: "usersNetworkIdAnalyzePOST"
+      operationId: "usersNetworkIdAnalyzeGET"
       parameters:
       - name: "id"
         in: "path"
