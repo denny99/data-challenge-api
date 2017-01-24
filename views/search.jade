@@ -7,18 +7,44 @@ block content
         .row.form-group
             .col-xs-12
                 .input-group
-                    input.form-control#searchInput(type='text', placeholder='Search keywords...')
+                    input.form-control#searchInput(type='text', placeholder='Suchwörter...')
                     span.input-group-btn
-                        button.btn.btn-default#searchButton(type='button') Search
+                        button.btn.btn-default#searchButton(type='button') Suchen
         .row
             .col-xs-12
                 table.table.table-bordered.table-striped
                     thead
                         tr
-                            th Name
+                            th Vorname
+                            th Nachname
+                            th Geschlecht
                             th Job
-                            th Company
-                            th Estimate
-                    tbody
+                            th Firma
+                            th Aktion
+                    tbody#searchResults
+
+    // Modal
+    #estimateModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-label='Schließen')
+                        span(aria-hidden='true') &times;
+                    h4#myModalLabel.modal-title Abschätzung
+                .modal-body
+                    table.table.table-bordered
+                        thead
+                            tr
+                                th Min. Gehalt
+                                th Max. Gehalt
+                                th Durchschn. Gehalt
+                        tbody
+                            tr
+                                td#minSalary
+                                td#maxSalary
+                                td#medianSalary
+                .modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') Schließen
+
 
     script(src='javascripts/search.js')

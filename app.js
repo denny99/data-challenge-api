@@ -58,7 +58,9 @@ module.exports.init = function (cb) {
 	});
 	app.get('/profile', AuthUtil.isAuthenticated, function (req, res, next) {
 		res.render('profile', {title: 'Profile', user: req.user});
-
+	});
+	app.get('/dashboard', AuthUtil.isAuthenticated, function (req, res, next) {
+		res.render('dashboard', {title: 'Dashboard', user: req.user});
 	});
 	app.get('/search', AuthUtil.isAuthenticated, function (req, res, next) {
 		res.render('search', {title: 'User search', user: req.user});

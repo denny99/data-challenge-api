@@ -12,7 +12,7 @@ $('#saveButton').click(function () {
 			share : $('#shareCb').is(':checked') ? 1 : 0
 		}),
 		success    : function (result) {
-			window.location = '/profile';
+			$.growl.notice({title: '', message: "Änderung gespeichert!"});
 		}
 	});
 });

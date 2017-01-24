@@ -23,7 +23,7 @@ exports.usersNetworkIdAnalyzeGET = function (args, req, res, next) {
 		var socialUser = JSONXMLUtil.stringToJSON(re);
 		UsersService.findUser(socialUser.id, undefined, args.network.value, undefined, undefined,
 			function (user, err) {
-				if (!err || true) {
+				if (!err) {
 					if (user.share === '1' || req.user.userId === user.userId) {
 						var path   = ParamUtil.buildPath([
 							'de', socialUser.employment.title, process.env.adzuna_app_id, process.env.adzuna_app_key,
@@ -47,6 +47,9 @@ exports.usersNetworkIdAnalyzeGET = function (args, req, res, next) {
 					}
 				}
 				else {
+					if (err.code === 404) {
+						err = new Error(403, 'permission not granted');
+					}
 					HttpUtil.sendResponse(res, err.code, err, res.req.accepts()[0], 'error');
 				}
 			})

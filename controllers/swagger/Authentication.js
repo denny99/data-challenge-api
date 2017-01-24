@@ -21,7 +21,7 @@ module.exports.usersAuthenticateProviderCallbackGET = function usersAuthenticate
 		}
 		else {
 			req.login(obj, function (err) {
-				res.redirect('/profile');
+				res.redirect('/dashboard');
 			});
 		}
 	});
