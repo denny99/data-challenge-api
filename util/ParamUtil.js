@@ -33,7 +33,7 @@ module.exports.buildPath = function (values) {
 	var result = '/';
 
 	values.forEach(function (value, index) {
-		result += encodeURI(value).replace('&', '%26').replace('/', '%2F').replace(':', '%3A');
+		result += encodeURIComponent(value);
 
 		//add / for all elements except last one
 		if (index < values.length - 1) {

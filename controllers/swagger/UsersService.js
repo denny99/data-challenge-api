@@ -166,15 +166,14 @@ exports.usersIdPUT = function (args, res, next) {
 		if (!err) {
 			//merge old and new values
 
-			if (req.user.password && existingUser.password !== args.user.value.passwordRepeat) {
+			if (args.user.value.password && existingUser.password !== args.user.value.passwordRepeat) {
 				return HttpUtil.sendResponse(res, 403, undefined, res.req.accepts()[0], 'error');
 			}
 
-			var mergedUser    = new User();
-			mergedUser.userId = existingUser.userId;
+			var mergedUser = existingUser;
 
 			//refresh with new data
-			_.assignInWith(mergedUser, existingUser, args.user.value, function (objValue, srcValue, key) {
+			_.assignInWith(existingUser, args.user.value, function (objValue, srcValue, key) {
 				//
 				if (key === 'userId' || key === 'xingId' || key === 'xingAccessToken' || key === 'xingAccessSecret' ||
 					key === 'linkedInId' ||

@@ -1,0 +1,24 @@
+//
+   Created by admin on 24.01.17.
+extends layout
+
+block content
+    .container
+        .row.form-group
+            .col-xs-12
+                .input-group
+                    input.form-control#searchInput(type='text', placeholder='Search keywords...')
+                    span.input-group-btn
+                        button.btn.btn-default#searchButton(type='button') Search
+        .row
+            .col-xs-12
+                table.table.table-bordered.table-striped
+                    thead
+                        tr
+                            th Name
+                            th Job
+                            th Company
+                            th Estimate
+                    tbody
+
+    script(src='javascripts/search.js')

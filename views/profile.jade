@@ -10,16 +10,22 @@ block content
         .row
             .col-xs-4.col-xs-offset-4
                 input#userIdInput(type="hidden" value="#{user.userId}")
-                .form-group
-                    a(href="/api/v1/users/#{user.userId}/connect/linkedIn" type="button" class="btn btn-primary") LinkedIn
-                .form-group
-                    a(href="/api/v1/users/#{user.userId}/connect/xing" type="button" class="btn btn-success") Xing
+                if !user.linkedInId
+                    .form-group
+                        a.btn.btn-primary.btn-block(href="/api/v1/users/#{user.userId}/connect/linkedIn" type="button") Connect with LinkedIn
+                if !user.xingId
+                    .form-group
+                        a.btn.btn-success.btn-block(href="/api/v1/users/#{user.userId}/connect/xing" type="button") Connect with Xing
                 .checkbox
                     label
-                        input#shareCb(type='checkbox')
-                        |  Daten Teilen
+                        if user.share == '1'
+                            input#shareCb(type='checkbox' checked)
+                            |  Daten Teilen
+                        else
+                            input#shareCb(type='checkbox')
+                            |  Daten Teilen
                 .form-group
-                    button#saveButton(type="button" class="btn btn-default") Speichern
+                    button#saveButton.pull-right(type="button" class="btn btn-default") Speichern
 
 
 

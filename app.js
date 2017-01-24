@@ -10,7 +10,8 @@ var fs           = require('fs');
 var helmet  = require('helmet');
 
 var APIError     = require('./models/Error');
-var ResponseUtil = require('./util/HttpUtil.js');
+var HttpUtil = require('./util/HttpUtil.js');
+var AuthUtil = require('./util/AuthUtil.js');
 
 global.passport = require('passport');
 
@@ -55,8 +56,12 @@ module.exports.init = function (cb) {
 		res.render('index', { title: 'Demo' });
 
 	});
-	app.get('/profile', function(req, res, next) {
-		res.render('profile', { title: 'Demo', user: req.user });
+	app.get('/profile', AuthUtil.isAuthenticated, function (req, res, next) {
+		res.render('profile', {title: 'Profile', user: req.user});
+
+	});
+	app.get('/search', AuthUtil.isAuthenticated, function (req, res, next) {
+		res.render('search', {title: 'User search', user: req.user});
 
 	});
 
@@ -104,7 +109,7 @@ module.exports.init = function (cb) {
 				res.locals.message = err.message;
 				res.locals.error   = req.app.get('env') === 'development' ? err : {};
 
-				ResponseUtil.sendResponse(res, err.code, err, req.accepts()[0], 'response');
+				HttpUtil.sendResponse(res, err.code, err, req.accepts()[0], 'response');
 			});
 
 			cb(app);

@@ -195,7 +195,7 @@ exports.usersSearchGET = function (args, req, res, next) {
 		method: 'get'
 	};
 
-	params.push(req.user.xingAccessToken);
+	params.push(req.user.xingAccessToken || 'NULL');
 	params = OAuthUtil.createXingOAuthParams(req.user, request_data, params);
 	params.push('first_name,last_name,employment_status,gender,professional_experience', args.keywords.value);
 
