@@ -22,7 +22,8 @@ module.exports.usersConnectNetworkCallbackGET = function usersConnectNetworkCall
 			}
 			else {
 				req.login(obj, function (err) {
-					res.status(204).end(err);
+					//TODO exchange to 204 for non demo
+					res.redirect('/profile');
 				});
 			}
 		});

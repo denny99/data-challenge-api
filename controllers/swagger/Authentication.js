@@ -21,6 +21,7 @@ module.exports.usersAuthenticateProviderCallbackGET = function usersAuthenticate
 		}
 		else {
 			req.login(obj, function (err) {
+				//TODO exchange to 204 for non demo
 				res.redirect('/dashboard');
 			});
 		}
