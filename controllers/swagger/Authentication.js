@@ -23,6 +23,7 @@ module.exports.usersAuthenticateProviderCallbackGET = function usersAuthenticate
 			req.login(obj, function (err) {
 				//TODO exchange to 204 for non demo
 				res.redirect('/dashboard');
+				//res.status(204).end(err);
 			});
 		}
 	});

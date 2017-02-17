@@ -3,14 +3,12 @@
  */
 
 $('#loginButton').click(function () {
-    $.ajax({
-        url: "/api/v1/users/authenticate/basic",
-        data: {
-            username: $('#inputUsername').value,
-            password: $('#inputPassword').value
-        },
-        success: function( result ) {
-            window.location = '/profile';
-        }
-    });
+	$.ajax({
+		url     : "/api/v1/users/authenticate/basic",
+		username: $('#inputUsername').val(),
+		password: $('#inputPassword').val(),
+		success : function (result) {
+			window.location = '/dashboard';
+		}
+	});
 });

@@ -44,6 +44,7 @@ function connectUser(req, provider, id, accessToken, refreshTokenOrSecret, done)
 					done(user, true);
 				}
 				else {
+					//TODO proper error when id already used
 					done(err);
 				}
 			});
@@ -101,7 +102,7 @@ exports.usersIdConnectNetworkDELETE = function (args, res, next) {
 						break;
 				}
 			}
-		UsersService.createUser(existingUser, function (existingUser, err) {
+		UsersService.updateUser(existingUser, function (existingUser, err) {
 				if (!err) {
 					HttpUtil.sendResponse(res, 200, existingUser, res.req.accept()[0]);
 				}
